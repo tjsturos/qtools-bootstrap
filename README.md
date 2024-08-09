@@ -7,10 +7,10 @@ This repository contains scripts to help you set up, manage, and update the Quil
 To get started quickly, run the following command in your terminal:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh)
+curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh | sudo bash
 ```
 
-This command will download the qtools-bootstrap repository to `~/qtools-bootstrap` and run the initialization script. The initialization script will then set up the ceremonyclient in `~/ceremonyclient` (if not already installed).
+This command will download and run the initialization script with sudo privileges. The script will set up the qtools-bootstrap repository in `~/qtools-bootstrap` and the ceremonyclient in `~/ceremonyclient` (if not already installed).
 
 ## Manual Setup
 
@@ -26,7 +26,7 @@ If you prefer to set things up manually, follow these steps:
    cd ~/qtools-bootstrap
    ```
 
-3. Run the initialization script:
+3. Run the initialization script with sudo privileges:
    ```
    sudo bash init.sh
    ```
@@ -97,7 +97,7 @@ To uninstall the Quilibrium Bootstrap Client, you can either:
 sudo bash ~/qtools-bootstrap/uninstall.sh
 ```
 
-This will remove all components of the Bootstrap Client, including the service, repository, and cron job.
+This will remove most components of the Bootstrap Client, including the service, qtools-bootstrap repository, and cron job. However, the ceremonyclient directory will be left intact.
 
 ## Automatic Updates
 
