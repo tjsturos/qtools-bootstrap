@@ -28,6 +28,12 @@ set_repo_dir() {
     echo "$home_dir/ceremonyclient"
 }
 
+# Function to set the qtools-bootstrap directory
+set_qtools_dir() {
+    local home_dir=$(get_home_dir)
+    echo "$home_dir/qtools-bootstrap"
+}
+
 # Function to check if script is run with sudo privileges
 check_sudo() {
     if [[ $EUID -ne 0 ]]; then

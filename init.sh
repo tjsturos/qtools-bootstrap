@@ -3,9 +3,10 @@
 # Check if we're running from the cloned repository or via curl
 if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
     echo "Downloading qtools-bootstrap repository..."
-    temp_dir=$(mktemp -d)
-    git clone https://github.com/tjsturos/qtools-bootstrap.git "$temp_dir"
-    cd "$temp_dir"
+    qtools_dir="$HOME/qtools-bootstrap"
+    mkdir -p "$qtools_dir"
+    git clone https://github.com/tjsturos/qtools-bootstrap.git "$qtools_dir"
+    cd "$qtools_dir"
 fi
 
 # Source the utils file
@@ -18,7 +19,7 @@ check_sudo
 setup_repository() {
     local repo_dir=$(set_repo_dir)
     if [[ ! -d "$repo_dir" ]]; then
-        echo "Cloning repository..."
+        echo "Cloning ceremonyclient repository..."
         git clone "$REPO_URL" "$repo_dir"
     fi
     cd "$repo_dir"
@@ -90,7 +91,7 @@ add_alias_to_bashrc "$HOME_DIR/.bashrc"
 # Setup the update-bootstrap script
 SCRIPT_PATH="/usr/local/bin/update-bootstrap"
 if [[ ! -f "$SCRIPT_PATH" ]]; then
-    echo "Setting up update-bootstrap script..."
+    echo "Setting up update-bootstrap command..."
     sudo ln -sf "$(set_repo_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
     sudo chmod +x "$SCRIPT_PATH"
 fi

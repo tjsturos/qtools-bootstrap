@@ -10,7 +10,28 @@ To get started quickly, run the following command in your terminal:
 bash <(curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh)
 ```
 
-This command will download the entire repository and run the initialization script, which sets up everything you need.
+This command will download the qtools-bootstrap repository to `~/qtools-bootstrap` and run the initialization script. The initialization script will then set up the ceremonyclient in `~/ceremonyclient` (if not already installed).
+
+## Manual Setup
+
+If you prefer to set things up manually, follow these steps:
+
+1. Clone this repository:
+   ```
+   git clone https://github.com/tjsturos/qtools-bootstrap.git ~/qtools-bootstrap
+   ```
+
+2. Navigate to the cloned directory:
+   ```
+   cd ~/qtools-bootstrap
+   ```
+
+3. Run the initialization script:
+   ```
+   sudo bash init.sh
+   ```
+
+This will set up the ceremonyclient in `~/ceremonyclient` (if not already installed) and switch to the `v2.0-bootstrap` branch.
 
 ## Usage
 
@@ -27,11 +48,21 @@ To update the Bootstrap Client, simply run:
 update-bootstrap
 ```
 
-This command will check for updates and apply them if available. If you want to force the update without checking for new versions, you can use the `-f` or `--force` flag:
+This command will check for updates and apply them if available.
+
+To force an update without checking for changes, use the `--force` or `-f` flag:
+
+```bash
+update-bootstrap --force
+```
+
+or
 
 ```bash
 update-bootstrap -f
 ```
+
+Note: While automatic updates are set up during installation, you can always run the update command manually if you want to check for updates immediately.
 
 ### Management Menu
 
