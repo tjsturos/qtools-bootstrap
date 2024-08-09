@@ -10,7 +10,12 @@ To get started quickly, run the following command in your terminal:
 curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh | sudo bash
 ```
 
-This command will download and run the initialization script with sudo privileges. The script will set up the qtools-bootstrap repository in the user's home directory (`~/qtools-bootstrap`) and the ceremonyclient in the user's home directory (`~/ceremonyclient`) if not already installed, even when run with sudo.
+This command will download and run the initialization script with sudo privileges. The script will:
+1. Set up or update the qtools-bootstrap repository in your home directory (`~/qtools-bootstrap`).
+2. Set up the ceremonyclient in your home directory (`~/ceremonyclient`) if not already installed.
+3. Perform necessary configurations and start the bootstrap client service.
+
+This process works correctly even when run with sudo, ensuring all files are placed in the correct user's home directory.
 
 ## Manual Setup
 

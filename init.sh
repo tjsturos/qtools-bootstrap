@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# Function to download and source utils.sh
-download_and_source_utils() {
-    local utils_url="https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/utils.sh"
-    if ! curl -s "$utils_url" -o /tmp/utils.sh; then
-        echo "Failed to download utils.sh"
-        exit 1
-    fi
-    source /tmp/utils.sh
-}
-
 # Function to get the appropriate home directory
 get_home_dir() {
     if [ "$SUDO_USER" ]; then
@@ -24,15 +14,30 @@ if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
     echo "Downloading qtools-bootstrap repository..."
     HOME_DIR=$(get_home_dir)
     qtools_dir="$HOME_DIR/qtools-bootstrap"
+    
+    # Remove existing directory if it exists
+    if [ -d "$qtools_dir" ]; then
+        echo "Removing existing qtools-bootstrap directory..."
+        rm -rf "$qtools_dir"
+    fi
+    
     mkdir -p "$qtools_dir"
     if ! git clone https://github.com/tjsturos/qtools-bootstrap.git "$qtools_dir"; then
         echo "Failed to clone qtools-bootstrap repository"
         exit 1
     fi
     cd "$qtools_dir"
-    download_and_source_utils
 else
-    source "$(dirname "$0")/utils.sh"
+    echo "Using existing qtools-bootstrap repository..."
+    cd "$(dirname "$0")"
+fi
+
+# Source utils.sh
+if [ -f "utils.sh" ]; then
+    source utils.sh
+else
+    echo "utils.sh not found. Installation may be incomplete."
+    exit 1
 fi
 
 # Check if script is run with sudo privileges
