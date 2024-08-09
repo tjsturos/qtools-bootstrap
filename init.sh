@@ -43,6 +43,43 @@ fi
 # Check if script is run with sudo privileges
 check_sudo
 
+# Function to ensure Go is installed
+ensure_go_installed() {
+    if ! command -v go &> /dev/null; then
+        echo "Go is not found in the PATH. Attempting to add it..."
+        if [ -d "/usr/local/go/bin" ]; then
+            export PATH=$PATH:/usr/local/go/bin
+            echo 'export PATH=$PATH:/usr/local/go/bin' >> "$HOME_DIR/.bashrc"
+            echo "Added Go to PATH. You may need to restart your terminal for changes to take effect."
+        else
+            echo "Go installation not found in /usr/local/go. Please install Go manually."
+            exit 1
+        fi
+    fi
+}
+
+# Function to build the bootstrap node
+build_bootstrap_node() {
+    echo "Building bootstrap node..."
+    cd "$(set_repo_dir)/node"
+    ensure_go_installed
+    if ! go build -o bootstrap-node; then
+        echo "Failed to build bootstrap node. Please check your Go installation."
+        exit 1
+    fi
+    sudo ln -sf "$(set_repo_dir)/node/bootstrap-node" /usr/local/bin/node
+}
+
+# Function to setup cron job
+setup_cron_job() {
+    local current_user=$(get_user)
+    if ! sudo -u "$current_user" crontab -l | grep -q "update-bootstrap"; then
+        echo "Setting up cron job..."
+        (sudo -u "$current_user" crontab -l 2>/dev/null; echo "*/10 * * * * /usr/local/bin/update-bootstrap") | sudo -u "$current_user" crontab -
+        echo "Cron job added to run every 10 minutes for user $current_user."
+    fi
+}
+
 # Function to setup the repository
 setup_repository() {
     local repo_dir=$(set_repo_dir)
@@ -58,14 +95,6 @@ setup_repository() {
     git fetch origin
     git checkout v2.0-bootstrap
     git pull origin v2.0-bootstrap
-}
-
-# Function to build the bootstrap node
-build_bootstrap_node() {
-    echo "Building bootstrap node..."
-    cd "$(set_repo_dir)/node"
-    go build -o bootstrap-node
-    sudo ln -sf "$(set_repo_dir)/node/bootstrap-node" /usr/local/bin/node
 }
 
 # Function to create and start the service
@@ -91,12 +120,18 @@ WantedBy=multi-user.target" | sudo tee "/etc/systemd/system/${SERVICE_NAME}.serv
     fi
 }
 
-# Function to setup cron job
-setup_cron_job() {
-    if ! crontab -l | grep -q "update-bootstrap"; then
-        echo "Setting up cron job..."
-        (crontab -l 2>/dev/null; echo "*/10 * * * * /usr/local/bin/update-bootstrap") | crontab -
-        echo "Cron job added to run every 10 minutes."
+# Function to add alias to bashrc
+add_alias_to_bashrc() {
+    local bashrc_file="$1"
+    local alias_line="alias update-bootstrap='bash <(curl -sSf \"$REPO_RAW_URL/update-bootstrap.sh\") || echo \"Error: Failed to download or execute the update script\"'"
+    
+    if ! grep -q "alias update-bootstrap" "$bashrc_file"; then
+        echo "" >> "$bashrc_file"
+        echo "# Quilibrium Bootstrap update alias" >> "$bashrc_file"
+        echo "$alias_line" >> "$bashrc_file"
+        echo "Alias added to $bashrc_file"
+    else
+        echo "Alias already exists in $bashrc_file"
     fi
 }
 
@@ -123,7 +158,6 @@ SCRIPT_PATH="/usr/local/bin/update-bootstrap"
 if [[ ! -f "$SCRIPT_PATH" ]]; then
     echo "Setting up update-bootstrap script..."
     sudo ln -sf "$(set_repo_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
-    sudo chmod +x "$SCRIPT_PATH"
 fi
 
 echo "Installation completed. Please run 'source ~/.bashrc' or log out and log back in to use the 'update-bootstrap' command."
