@@ -13,7 +13,14 @@ REPO_DIR=$(set_repo_dir)
 update_repository() {
     echo "Updating repository..."
     cd "$REPO_DIR"
+    git fetch origin
+    local changes=$(git rev-list HEAD...origin/v2.0-bootstrap --count)
+    if [ "$changes" -eq "0" ] && [ "$1" != "--force" ]; then
+        echo "No updates available."
+        return 1
+    fi
     git pull origin v2.0-bootstrap
+    return 0
 }
 
 # Function to rebuild the bootstrap node
@@ -28,10 +35,14 @@ rebuild_bootstrap_node() {
 update_bootstrap() {
     echo "Updating bootstrap..."
     sudo systemctl stop "$SERVICE_NAME"
-    update_repository
-    rebuild_bootstrap_node
-    sudo systemctl start "$SERVICE_NAME"
-    echo "Update completed."
+    if update_repository "$1"; then
+        rebuild_bootstrap_node
+        sudo systemctl start "$SERVICE_NAME"
+        echo "Update completed."
+    else
+        sudo systemctl start "$SERVICE_NAME"
+        echo "No update performed."
+    fi
 }
 
 # Function to run init script
@@ -57,14 +68,14 @@ run_init_script() {
 if [[ ! -f "/etc/systemd/system/${SERVICE_NAME}.service" ]] || [[ ! -L "/usr/local/bin/node" ]]; then
     if run_init_script; then
         echo "Initial setup completed. Proceeding with update..."
-        update_bootstrap
+        update_bootstrap "$1"
     else
         echo "Failed to complete initial setup. Please run the init script manually."
         exit 1
     fi
 else
     echo "Checking for updates..."
-    update_bootstrap
+    update_bootstrap "$1"
 fi
 
 echo "Update script execution completed."

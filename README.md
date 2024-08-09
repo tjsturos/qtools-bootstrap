@@ -6,55 +6,71 @@ This repository contains scripts to help you set up, manage, and update the Quil
 
 To get started quickly, run the following command in your terminal:
 
-```
+```bash
 bash <(curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh)
 ```
 
-This command will download and run the initialization script, which sets up everything you need.
+This command will download the entire repository and run the initialization script, which sets up everything you need.
 
-## Manual Setup
+## Usage
 
-If you prefer to set up the Bootstrap Client manually, you can follow these steps:
+After installation, you can use the following commands:
 
-1. Clone the repository: `git clone https://github.com/tjsturos/qtools-bootstrap`
-2. Change into the cloned directory: `cd qtools-bootstrap`
-3. Run the initialization script: `bash init.sh`
+- `update-bootstrap`: Update the Quilibrium Bootstrap Client
+- `manage-bootstrapclient`: Open the management menu for the Bootstrap Client
 
-## Managing the Bootstrap Client
+### Updating the Bootstrap Client
 
-Once the Bootstrap Client is set up, you can manage it using the `manage-bootstrapclient.sh` script. This script provides a menu-driven interface for:
+To update the Bootstrap Client, simply run:
 
-* Viewing service status
-* Viewing live log output
-* Starting the service
-* Stopping the service
-* Restarting the service
-* Checking for updates
-* Viewing the last 50 log lines
-
-To run the management script, use the following command:
-
-```
-bash manage-bootstrapclient.sh
+```bash
+update-bootstrap
 ```
 
-## Updating the Bootstrap Client
+This command will check for updates and apply them if available. If you want to force the update without checking for new versions, you can use the `-f` or `--force` flag:
 
-The Bootstrap Client will automatically check for updates every 10 minutes. If an update is available, it will be applied automatically.
-
-You can also manually check for updates and apply them using the following command:
-
+```bash
+update-bootstrap -f
 ```
-bash update-bootstrap.sh
+
+### Management Menu
+
+To access the management menu, run:
+
+```bash
+manage-bootstrapclient
 ```
+
+The management menu provides the following options:
+
+1. View Service Status
+2. View Live Log Output
+3. Start Service
+4. Stop Service
+5. Restart Service
+6. Check for Updates
+7. View Last 50 Log Lines
+8. Exit
+
+Simply follow the on-screen prompts to manage your Bootstrap Client.
+
+## Automatic Updates
+
+The installation process sets up a cron job that checks for updates every 10 minutes. You don't need to do anything manually to keep your client up-to-date.
 
 ## Troubleshooting
 
-If you encounter any issues with the Bootstrap Client or the management script, you can view the log files for troubleshooting purposes. The log files are located in the `/var/log/bootstrapclient` directory.
+If you encounter any issues:
 
-## Contributing
+1. Make sure you're running the scripts with sudo privileges.
+2. Check the service status using the management menu.
+3. View the logs for any error messages.
 
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request on the GitHub repository.
+If problems persist, please open an issue on this GitHub repository with details about the error you're experiencing.
+
+## Support
+
+For additional help or questions, please open an issue on this GitHub repository.
 
 ## License
 
