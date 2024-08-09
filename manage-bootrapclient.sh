@@ -20,8 +20,8 @@ show_menu() {
     echo "5. Restart Service"
     echo "6. Check for Updates"
     echo "7. View Last 50 Log Lines"
-    echo "8. Exit"
-    echo
+    echo "8. Uninstall"
+    echo "9. Exit"
 }
 
 # Function to pause
@@ -77,6 +77,21 @@ view_last_logs() {
     pause
 }
 
+# Function to uninstall the service
+uninstall_service() {
+    echo -e "${RED}Warning: This will uninstall the ${SERVICE_NAME} service and remove all associated files.${NC}"
+    read -p "Are you sure you want to proceed? (y/N): " confirm
+    if [[ $confirm == [yY] ]]; then
+        echo "Uninstalling..."
+        sudo bash "$(dirname "$0")/uninstall.sh"
+        echo "Uninstallation completed. Exiting management script."
+        exit 0
+    else
+        echo "Uninstallation cancelled."
+    fi
+    pause
+}
+
 # Main loop
 while true
 do
@@ -90,7 +105,8 @@ do
         5) restart_service ;;
         6) check_updates ;;
         7) view_last_logs ;;
-        8) echo "Exiting..."; exit 0 ;;
+        8) uninstall_service ;;
+        9) echo "Exiting..."; exit 0 ;;
         *) echo -e "${RED}Error...${NC}" && sleep 2
-    esac
+     esac
 done

@@ -81,9 +81,23 @@ The management menu provides the following options:
 5. Restart Service
 6. Check for Updates
 7. View Last 50 Log Lines
-8. Exit
+8. Uninstall
+9. Exit
 
 Simply follow the on-screen prompts to manage your Bootstrap Client.
+
+### Uninstalling
+
+To uninstall the Quilibrium Bootstrap Client, you can either:
+
+1. Use the management menu and select the "Uninstall" option.
+2. Run the uninstall script directly:
+
+```bash
+sudo bash ~/qtools-bootstrap/uninstall.sh
+```
+
+This will remove all components of the Bootstrap Client, including the service, repository, and cron job.
 
 ## Automatic Updates
 
