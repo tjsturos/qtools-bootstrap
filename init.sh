@@ -1,16 +1,29 @@
 #!/bin/bash
 
+# Function to download and source utils.sh
+download_and_source_utils() {
+    local utils_url="https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/utils.sh"
+    if ! curl -s "$utils_url" -o /tmp/utils.sh; then
+        echo "Failed to download utils.sh"
+        exit 1
+    fi
+    source /tmp/utils.sh
+}
+
 # Check if we're running from the cloned repository or via curl
 if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
     echo "Downloading qtools-bootstrap repository..."
     qtools_dir="$HOME/qtools-bootstrap"
     mkdir -p "$qtools_dir"
-    git clone https://github.com/tjsturos/qtools-bootstrap.git "$qtools_dir"
+    if ! git clone https://github.com/tjsturos/qtools-bootstrap.git "$qtools_dir"; then
+        echo "Failed to clone qtools-bootstrap repository"
+        exit 1
+    fi
     cd "$qtools_dir"
+    download_and_source_utils
+else
+    source "$(dirname "$0")/utils.sh"
 fi
-
-# Source the utils file
-source "$(dirname "$0")/utils.sh"
 
 # Check if script is run with sudo privileges
 check_sudo
@@ -20,7 +33,10 @@ setup_repository() {
     local repo_dir=$(set_repo_dir)
     if [[ ! -d "$repo_dir" ]]; then
         echo "Cloning ceremonyclient repository..."
-        git clone "$REPO_URL" "$repo_dir"
+        if ! git clone "$REPO_URL" "$repo_dir"; then
+            echo "Failed to clone ceremonyclient repository"
+            exit 1
+        fi
     fi
     cd "$repo_dir"
     echo "Updating repository..."
@@ -91,7 +107,7 @@ add_alias_to_bashrc "$HOME_DIR/.bashrc"
 # Setup the update-bootstrap script
 SCRIPT_PATH="/usr/local/bin/update-bootstrap"
 if [[ ! -f "$SCRIPT_PATH" ]]; then
-    echo "Setting up update-bootstrap command..."
+    echo "Setting up update-bootstrap script..."
     sudo ln -sf "$(set_repo_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
     sudo chmod +x "$SCRIPT_PATH"
 fi
