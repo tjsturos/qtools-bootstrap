@@ -1,0 +1,6 @@
+Assumptions: That this will be run on Ubuntu 20, 22, or 24 LTS, and that the user can be either root or a non-root user.
+
+The code should work for both types of users.
+
+The Github repo is https://github.com/tjsturos/qtools-bootstrap
+
