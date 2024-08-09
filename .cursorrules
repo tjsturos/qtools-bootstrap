@@ -4,3 +4,6 @@ The code should work for both types of users.
 
 The Github repo is https://github.com/tjsturos/qtools-bootstrap
 
+When making updates to the code, appropriate modifications should always be made to the README.md file to keep it up to date.
+
+If there are manual modififications made since the last chat, those need to be accounted for when generating new code changes.  Assume they were there for a reason and use them unless there is a good reason not to.

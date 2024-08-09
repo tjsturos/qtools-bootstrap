@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Check if we're running from the cloned repository or via curl
+if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
+    echo "Downloading qtools-bootstrap repository..."
+    temp_dir=$(mktemp -d)
+    git clone https://github.com/tjsturos/qtools-bootstrap.git "$temp_dir"
+    cd "$temp_dir"
+fi
+
 # Source the utils file
 source "$(dirname "$0")/utils.sh"
 
