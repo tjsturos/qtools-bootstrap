@@ -44,9 +44,6 @@ else
     exit 1
 fi
 
-# Check if script is run with sudo privileges
-check_sudo
-
 # Function to ensure Go 1.22.4 is installed
 ensure_go_installed() {
     if ! command -v go &> /dev/null || [[ "$(go version | awk '{print $3}' | sed 's/go//')" != "1.22.4" ]]; then
