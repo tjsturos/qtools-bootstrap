@@ -1,18 +1,22 @@
 #!/bin/bash
 
-# Function to get the appropriate home directory
-get_home_dir() {
+# Function to get the appropriate home directory and user
+get_home_dir_and_user() {
     if [ "$SUDO_USER" ]; then
-        echo "/home/$SUDO_USER"
+        echo "/home/$SUDO_USER" "$SUDO_USER"
+    elif [ "$HOME" = "/root" ]; then
+        echo "/root" "root"
     else
-        echo "$HOME"
+        echo "$HOME" "$USER"
     fi
 }
+
+# Get home directory and user
+read HOME_DIR ACTUAL_USER <<< $(get_home_dir_and_user)
 
 # Check if we're running from the cloned repository or via curl
 if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
     echo "Downloading qtools-bootstrap repository..."
-    HOME_DIR=$(get_home_dir)
     qtools_dir="$HOME_DIR/qtools-bootstrap"
     
     # Remove existing directory if it exists
@@ -26,6 +30,8 @@ if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
         echo "Failed to clone qtools-bootstrap repository"
         exit 1
     fi
+    # Set correct ownership
+    chown -R $ACTUAL_USER:$ACTUAL_USER "$qtools_dir"
     cd "$qtools_dir"
 else
     echo "Using existing qtools-bootstrap repository..."
@@ -86,6 +92,8 @@ setup_repository() {
             echo "Failed to clone ceremonyclient repository"
             exit 1
         fi
+        # Set correct ownership
+        chown -R $ACTUAL_USER:$ACTUAL_USER "$repo_dir"
     fi
     cd "$repo_dir"
     echo "Updating repository..."
@@ -159,5 +167,8 @@ if [[ ! -f "$SCRIPT_PATH" ]]; then
     echo "Setting up update-bootstrap script..."
     sudo ln -sf "$(set_repo_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
 fi
+
+# Ensure correct ownership of the home directory contents
+chown -R $ACTUAL_USER:$ACTUAL_USER "$HOME_DIR"
 
 echo "Installation completed. Please run 'source ~/.bashrc' or log out and log back in to use the 'update-bootstrap' command."
