@@ -4,34 +4,14 @@ REPO_URL="https://github.com/tjsturos/qtools-bootstrap"
 REPO_RAW_URL="https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main"
 SERVICE_NAME="bootstrapclient"
 
-# Function to get the appropriate home directory
-get_home_dir() {
-    if [[ "$SUDO_USER" ]]; then
-        getent passwd "$SUDO_USER" | cut -d: -f6
-    else
-        echo "$HOME"
-    fi
-}
-
-# Function to get the appropriate user
-get_user() {
-    if [[ "$SUDO_USER" ]]; then
-        echo "$SUDO_USER"
-    else
-        echo "$USER"
-    fi
-}
-
 # Function to set the repository directory
 set_repo_dir() {
-    local home_dir=$(get_home_dir)
-    echo "$home_dir/ceremonyclient"
+    echo "$HOME/ceremonyclient"
 }
 
 # Function to set the qtools-bootstrap directory
 set_qtools_dir() {
-    local home_dir=$(get_home_dir)
-    echo "$home_dir/qtools-bootstrap"
+    echo "$HOME/qtools-bootstrap"
 }
 
 # Function to check if script is run with sudo privileges
@@ -44,7 +24,7 @@ check_sudo() {
 
 # Function to add alias to bashrc
 add_alias_to_bashrc() {
-    local bashrc_file="$1"
+    local bashrc_file="$HOME/.bashrc"
     local alias_line="alias update-bootstrap='bash <(curl -sSf \"$REPO_RAW_URL/update-bootstrap.sh\") || echo \"Error: Failed to download or execute the update script\"'"
     
     if ! grep -q "alias update-bootstrap" "$bashrc_file"; then

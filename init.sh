@@ -101,8 +101,7 @@ setup_service
 setup_cron_job
 
 # Add alias to appropriate bashrc file
-HOME_DIR=$(get_home_dir)
-add_alias_to_bashrc "$HOME_DIR/.bashrc"
+add_alias_to_bashrc "$HOME/.bashrc"
 
 # Setup the update-bootstrap script
 SCRIPT_PATH="/usr/local/bin/update-bootstrap"
