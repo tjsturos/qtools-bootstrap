@@ -23,13 +23,6 @@ set_qtools_dir() {
     echo "$(get_home_dir)/qtools-bootstrap"
 }
 
-# Function to check if script is run with sudo privileges
-check_sudo() {
-    if [[ $EUID -ne 0 ]]; then
-        echo "This script must be run as root or with sudo privileges"
-        exit 1
-    fi
-}
 
 # Function to check if a file exists
 file_exists() {

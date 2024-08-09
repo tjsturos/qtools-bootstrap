@@ -3,9 +3,6 @@
 # Source the utils file
 source "$(dirname "$0")/utils.sh"
 
-# Check if script is run with sudo privileges
-check_sudo
-
 echo "This script will uninstall the Quilibrium Bootstrap Client and remove associated files, except for the ceremonyclient directory."
 read -p "Are you sure you want to proceed? (y/N): " confirm
 

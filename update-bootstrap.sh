@@ -9,8 +9,6 @@ else
     source "$HOME/qtools-bootstrap/utils.sh"
 fi
 
-# Check if script is run with sudo privileges
-check_sudo
 
 # Set the directory for the repository
 REPO_DIR=$(set_repo_dir)
