@@ -1,7 +1,13 @@
 #!/bin/bash
 
-# Source the utils file
-source "$(dirname "$0")/utils.sh"
+# Source the utils file using a more robust method
+if [ "$SUDO_USER" ]; then
+    source "/home/$SUDO_USER/qtools-bootstrap/utils.sh"
+elif [ "$HOME" = "/root" ]; then
+    source "/root/qtools-bootstrap/utils.sh"
+else
+    source "$HOME/qtools-bootstrap/utils.sh"
+fi
 
 # Check if script is run with sudo privileges
 check_sudo

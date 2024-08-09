@@ -2,6 +2,13 @@
 
 This repository contains scripts to help you set up, manage, and update the Quilibrium Bootstrap Client.
 
+## Prerequisites
+
+- Ubuntu 20.04 LTS or later
+- Git
+
+The script will automatically install Go 1.22.4 if it's not already present on your system. This is done using the `install-go.sh` script, which is part of the qtools-bootstrap repository.
+
 ## Quick Start
 
 To get started quickly, run the following command in your terminal:
@@ -12,10 +19,13 @@ curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh
 
 This command will download and run the initialization script with sudo privileges. The script will:
 1. Set up or update the qtools-bootstrap repository in your home directory (`~/qtools-bootstrap`).
-2. Set up the ceremonyclient in your home directory (`~/ceremonyclient`) if not already installed.
-3. Perform necessary configurations and start the bootstrap client service.
+2. Install Go 1.22.4 if it's not already installed.
+3. Set up the ceremonyclient in your home directory (`~/ceremonyclient`) if not already installed.
+4. Build the bootstrap node.
+5. Set up a cron job for the current user to check for updates every 10 minutes.
+6. Perform necessary configurations and start the bootstrap client service.
 
-This process works correctly even when run with sudo, ensuring all files are placed in the correct user's home directory.
+This process works correctly even when run with sudo, ensuring all files are placed in the correct user's home directory and the cron job is set up for the appropriate user.
 
 ## Manual Setup
 

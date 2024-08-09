@@ -43,18 +43,15 @@ fi
 # Check if script is run with sudo privileges
 check_sudo
 
-# Function to ensure Go is installed
+# Function to ensure Go 1.22.4 is installed
 ensure_go_installed() {
-    if ! command -v go &> /dev/null; then
-        echo "Go is not found in the PATH. Attempting to add it..."
-        if [ -d "/usr/local/go/bin" ]; then
-            export PATH=$PATH:/usr/local/go/bin
-            echo 'export PATH=$PATH:/usr/local/go/bin' >> "$HOME_DIR/.bashrc"
-            echo "Added Go to PATH. You may need to restart your terminal for changes to take effect."
-        else
-            echo "Go installation not found in /usr/local/go. Please install Go manually."
-            exit 1
-        fi
+    if ! command -v go &> /dev/null || [[ "$(go version | awk '{print $3}' | sed 's/go//')" != "1.22.4" ]]; then
+        echo "Go 1.22.4 is not installed. Installing now..."
+        bash "$(dirname "$0")/install-go.sh"
+        # Reload the shell configuration to update PATH
+        source "$HOME/.bashrc"
+    else
+        echo "Go 1.22.4 is already installed."
     fi
 }
 
@@ -137,6 +134,9 @@ add_alias_to_bashrc() {
 
 # Main execution
 echo "Initializing Quilibrium Bootstrap setup..."
+
+# Ensure Go 1.22.4 is installed
+ensure_go_installed
 
 # Setup the repository
 setup_repository
