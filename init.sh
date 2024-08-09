@@ -4,8 +4,6 @@
 get_home_dir_and_user() {
     if [ "$SUDO_USER" ]; then
         echo "/home/$SUDO_USER" "$SUDO_USER"
-    elif [ "$HOME" = "/root" ]; then
-        echo "/root" "root"
     else
         echo "$HOME" "$USER"
     fi
@@ -75,11 +73,10 @@ build_bootstrap_node() {
 
 # Function to setup cron job
 setup_cron_job() {
-    local current_user=$(get_user)
-    if ! sudo -u "$current_user" crontab -l | grep -q "update-bootstrap"; then
+    if ! sudo -u "$ACTUAL_USER" crontab -l | grep -q "update-bootstrap"; then
         echo "Setting up cron job..."
-        (sudo -u "$current_user" crontab -l 2>/dev/null; echo "*/10 * * * * /usr/local/bin/update-bootstrap") | sudo -u "$current_user" crontab -
-        echo "Cron job added to run every 10 minutes for user $current_user."
+        (sudo -u "$ACTUAL_USER" crontab -l 2>/dev/null; echo "*/10 * * * * /usr/local/bin/update-bootstrap") | sudo -u "$ACTUAL_USER" crontab -
+        echo "Cron job added to run every 10 minutes for user $ACTUAL_USER."
     fi
 }
 
