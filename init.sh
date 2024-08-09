@@ -10,10 +10,20 @@ download_and_source_utils() {
     source /tmp/utils.sh
 }
 
+# Function to get the appropriate home directory
+get_home_dir() {
+    if [ "$SUDO_USER" ]; then
+        echo "/home/$SUDO_USER"
+    else
+        echo "$HOME"
+    fi
+}
+
 # Check if we're running from the cloned repository or via curl
 if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
     echo "Downloading qtools-bootstrap repository..."
-    qtools_dir="$HOME/qtools-bootstrap"
+    HOME_DIR=$(get_home_dir)
+    qtools_dir="$HOME_DIR/qtools-bootstrap"
     mkdir -p "$qtools_dir"
     if ! git clone https://github.com/tjsturos/qtools-bootstrap.git "$qtools_dir"; then
         echo "Failed to clone qtools-bootstrap repository"
@@ -101,7 +111,7 @@ setup_service
 setup_cron_job
 
 # Add alias to appropriate bashrc file
-add_alias_to_bashrc "$HOME/.bashrc"
+add_alias_to_bashrc "$HOME_DIR/.bashrc"
 
 # Setup the update-bootstrap script
 SCRIPT_PATH="/usr/local/bin/update-bootstrap"

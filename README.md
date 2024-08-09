@@ -10,7 +10,7 @@ To get started quickly, run the following command in your terminal:
 curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh | sudo bash
 ```
 
-This command will download and run the initialization script with sudo privileges. The script will set up the qtools-bootstrap repository in `~/qtools-bootstrap` and the ceremonyclient in `~/ceremonyclient` (if not already installed).
+This command will download and run the initialization script with sudo privileges. The script will set up the qtools-bootstrap repository in the user's home directory (`~/qtools-bootstrap`) and the ceremonyclient in the user's home directory (`~/ceremonyclient`) if not already installed, even when run with sudo.
 
 ## Manual Setup
 
@@ -45,7 +45,7 @@ After installation, you can use the following commands:
 To update the Bootstrap Client, simply run:
 
 ```bash
-update-bootstrap
+sudo update-bootstrap
 ```
 
 This command will check for updates and apply them if available.
@@ -53,13 +53,13 @@ This command will check for updates and apply them if available.
 To force an update without checking for changes, use the `--force` or `-f` flag:
 
 ```bash
-update-bootstrap --force
+sudo update-bootstrap --force
 ```
 
 or
 
 ```bash
-update-bootstrap -f
+sudo update-bootstrap -f
 ```
 
 Note: While automatic updates are set up during installation, you can always run the update command manually if you want to check for updates immediately.
@@ -69,7 +69,7 @@ Note: While automatic updates are set up during installation, you can always run
 To access the management menu, run:
 
 ```bash
-manage-bootstrapclient
+sudo manage-bootstrapclient
 ```
 
 The management menu provides the following options:
