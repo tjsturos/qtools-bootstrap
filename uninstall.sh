@@ -13,6 +13,7 @@ remove_repo=false
 remove_cron=false
 remove_aliases=false
 remove_update_script=false
+remove_auto_completion=false
 
 # Function to get user input
 get_yes_no() {
@@ -32,6 +33,7 @@ get_yes_no "Remove the bootstrap node binary?" && remove_binary=true
 get_yes_no "Remove the qtools-bootstrap repository?" && remove_repo=true
 get_yes_no "Remove the cron job and update-bootstrap script?" && remove_cron=true && remove_update_script=true
 get_yes_no "Remove the update-bootstrap and manage-bootstrap aliases?" && remove_aliases=true
+get_yes_no "Remove the auto-completion for manage-bootstrap?" && remove_auto_completion=true
 
 # Check for inconsistent choices and dependencies
 if $remove_binary && ! $uninstall_service; then
@@ -48,6 +50,11 @@ if $remove_repo; then
     remove_cron=true
     remove_update_script=true
     remove_aliases=true
+    remove_auto_completion=true
+fi
+
+if $remove_aliases; then
+    remove_auto_completion=true
 fi
 
 # Confirm uninstallation
@@ -57,6 +64,7 @@ $remove_binary && echo "- Remove the bootstrap node binary"
 $remove_repo && echo "- Remove the qtools-bootstrap repository"
 $remove_cron && echo "- Remove the cron job and update-bootstrap script"
 $remove_aliases && echo "- Remove the aliases"
+$remove_auto_completion && echo "- Remove the auto-completion for manage-bootstrap"
 
 get_yes_no "Are you sure you want to proceed with the uninstallation?" || exit 0
 
@@ -96,6 +104,12 @@ if $remove_aliases; then
     sed -i '/alias manage-bootstrap/d' "$HOME_DIR/.bashrc"
     sed -i '/# Quilibrium Bootstrap update aliases/d' "$HOME_DIR/.bashrc"
     sed -i '/# Quilibrium Bootstrap aliases/d' "$HOME_DIR/.bashrc"
+fi
+
+if $remove_auto_completion; then
+    echo "Removing auto-completion for manage-bootstrap..."
+    sudo rm /etc/bash_completion.d/manage-bootstrap-completion.bash
+    echo "Auto-completion removed. You may need to restart your shell for changes to take effect."
 fi
 
 echo "Uninstallation completed based on your choices."

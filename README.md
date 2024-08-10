@@ -25,6 +25,7 @@ This command will download and run the initialization script. The script will:
 4. Build the bootstrap node.
 5. Set up a cron job for the current user to check for updates every 10 minutes.
 6. Perform necessary configurations and start the bootstrap client service.
+7. Set up auto-completion for the `manage-bootstrap` command.
 
 This process will prompt for sudo privileges when needed, ensuring all files are placed in the correct user's home directory and the cron job is set up for the appropriate user.
 
@@ -51,12 +52,24 @@ This will set up the ceremonyclient in `~/ceremonyclient` (if not already instal
 
 ## Usage
 
-After installation, you can use the following commands:
+The `manage-bootstrap` script now supports both interactive menu and command-line arguments:
 
-- `update-bootstrap`: Update the Quilibrium Bootstrap Client
-- `manage-bootstrap`: Open the management menu for the Bootstrap Client
+1. Interactive menu: Simply run `manage-bootstrap` without any arguments.
+2. Command-line arguments: Use `manage-bootstrap <command>`, where `<command>` can be:
+   - `status`: View service status
+   - `log`: View live log output
+   - `start`: Start the service
+   - `stop`: Stop the service
+   - `restart`: Restart the service
+   - `update`: Check for updates
+   - `lastlog`: View last 50 log lines
+   - `uninstall`: Uninstall the service
 
-These commands are available as aliases after you source your `.bashrc` file or log out and log back in. They use the locally installed scripts in your qtools-bootstrap directory.
+Bash completion is available for the command-line arguments. It is automatically set up during installation. If you need to use it immediately after installation without restarting your shell, run:
+
+```bash
+source ~/.bashrc
+```
 
 ### Updating the Bootstrap Client
 
@@ -82,16 +95,6 @@ update-bootstrap -f
 
 Note: While automatic updates are set up during installation, you can always run the update command manually if you want to check for updates immediately.
 
-### Managing the Bootstrap Client
-
-To open the management menu, run:
-
-```bash
-manage-bootstrap
-```
-
-This will provide you with options to view the service status, logs, start/stop the service, and more.
-
 ### Uninstalling
 
 To uninstall the Bootstrap Client, you can use the management menu or run the uninstall script directly:
@@ -100,7 +103,16 @@ To uninstall the Bootstrap Client, you can use the management menu or run the un
 bash ~/qtools-bootstrap/uninstall.sh
 ```
 
-The uninstallation process will ask you which components you want to remove, allowing you to keep certain parts of the setup if desired.
+The uninstallation process will ask you which components you want to remove, allowing you to keep certain parts of the setup if desired. This includes:
+
+- The qtools-bootstrap repository
+- The ceremonyclient directory
+- The systemd service
+- Cron jobs
+- Aliases (manage-bootstrap and update-bootstrap)
+- Auto-completion for manage-bootstrap
+
+You can choose to remove any combination of these components. The auto-completion for manage-bootstrap will be automatically removed if you choose to remove either the qtools-bootstrap repository or the aliases. If you keep both the repository and the aliases, you'll be given a separate option to remove the auto-completion.
 
 ## Automatic Updates
 

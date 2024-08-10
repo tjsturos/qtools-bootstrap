@@ -98,21 +98,42 @@ uninstall_service() {
     pause
 }
 
+# Function to handle command-line arguments
+handle_argument() {
+    case "$1" in
+        status) view_status ;;
+        log) view_live_log ;;
+        start) start_service ;;
+        stop) stop_service ;;
+        restart) restart_service ;;
+        update) check_updates ;;
+        lastlog) view_last_logs ;;
+        uninstall) uninstall_service ;;
+        *) return 1 ;;
+    esac
+    exit 0
+}
+
+# Check for command-line argument
+if [ $# -gt 0 ]; then
+    handle_argument "$1"
+fi
+
 # Main loop
 while true
 do
     show_menu
     read -p "Enter your choice [1-9]: " choice
     case $choice in
-        1) view_status ;;
-        2) view_live_log ;;
-        3) start_service ;;
-        4) stop_service ;;
-        5) restart_service ;;
-        6) check_updates ;;
-        7) view_last_logs ;;
-        8) uninstall_service ;;
-        9) echo "Exiting..."; exit 0 ;;
-        *) echo -e "${RED}Error...${NC}" && sleep 2
+         1) view_status ;;
+         2) view_live_log ;;
+         3) start_service ;;
+         4) stop_service ;;
+         5) restart_service ;;
+         6) check_updates ;;
+         7) view_last_logs ;;
+         8) uninstall_service ;;
+         9) echo "Exiting..."; exit 0 ;;
+         *) echo -e "${RED}Error...${NC}" && sleep 2
      esac
 done
