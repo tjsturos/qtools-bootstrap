@@ -156,7 +156,7 @@ add_alias_to_bashrc "$HOME_DIR/.bashrc"
 SCRIPT_PATH="/usr/local/bin/update-bootstrap"
 if [[ ! -f "$SCRIPT_PATH" ]]; then
     echo "Setting up update-bootstrap script..."
-    sudo ln -sf "$(set_repo_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
+    sudo ln -sf "$(set_qtools_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
 fi
 
 echo "Installation completed. Please run 'source ~/.bashrc' or log out and log back in to use the 'update-bootstrap' command."
