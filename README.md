@@ -6,6 +6,7 @@ This repository contains scripts to help you set up, manage, and update the Quil
 
 - Ubuntu 20.04 LTS or later
 - Git
+- Sudo privileges for current user
 
 The script will automatically install Go 1.22.4 if it's not already present on your system. This is done using the `install-go.sh` script, which is part of the qtools-bootstrap repository.
 
