@@ -28,7 +28,6 @@ show_menu() {
     echo "7. View Last 50 Log Lines"
     echo "8. Uninstall"
     echo "9 (or q). Exit"
-    echo "q. Exit"
 }
 
 # Function to pause
