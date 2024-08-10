@@ -32,6 +32,16 @@ get_yes_no "Remove the qtools-bootstrap repository?" && remove_repo=true
 get_yes_no "Remove the cron job?" && remove_cron=true
 get_yes_no "Remove the update-bootstrap and manage-bootstrap aliases?" && remove_aliases=true
 
+# Check for inconsistent choices
+if $remove_binary && ! $uninstall_service; then
+    echo "Warning: Removing the node binary will break the service. The service must be uninstalled if the binary is removed."
+    get_yes_no "Do you want to uninstall the service as well?" && uninstall_service=true
+    if ! $uninstall_service; then
+        echo "Cannot proceed with inconsistent choices. Exiting."
+        exit 1
+    fi
+fi
+
 # Confirm uninstallation
 echo "You have chosen to:"
 $uninstall_service && echo "- Uninstall the ${SERVICE_NAME} service"
