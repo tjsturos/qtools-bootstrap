@@ -12,6 +12,7 @@ remove_binary=false
 remove_repo=false
 remove_cron=false
 remove_aliases=false
+remove_update_script=false
 
 # Function to get user input
 get_yes_no() {
@@ -29,7 +30,7 @@ get_yes_no() {
 get_yes_no "Uninstall and remove the ${SERVICE_NAME} service?" && uninstall_service=true
 get_yes_no "Remove the bootstrap node binary?" && remove_binary=true
 get_yes_no "Remove the qtools-bootstrap repository?" && remove_repo=true
-get_yes_no "Remove the cron job?" && remove_cron=true
+get_yes_no "Remove the cron job and update-bootstrap script?" && remove_cron=true && remove_update_script=true
 get_yes_no "Remove the update-bootstrap and manage-bootstrap aliases?" && remove_aliases=true
 
 # Check for inconsistent choices
@@ -47,7 +48,7 @@ echo "You have chosen to:"
 $uninstall_service && echo "- Uninstall the ${SERVICE_NAME} service"
 $remove_binary && echo "- Remove the bootstrap node binary"
 $remove_repo && echo "- Remove the qtools-bootstrap repository"
-$remove_cron && echo "- Remove the cron job"
+$remove_cron && echo "- Remove the cron job and update-bootstrap script"
 $remove_aliases && echo "- Remove the aliases"
 
 get_yes_no "Are you sure you want to proceed with the uninstallation?" || exit 0
@@ -90,3 +91,14 @@ sudo rm -f "/usr/local/bin/update-bootstrap"
 
 echo "Uninstallation completed based on your choices."
 echo "You may need to log out and log back in for all changes to take effect."
+
+if $uninstall_service; then
+    echo "The ${SERVICE_NAME} service has been uninstalled."
+else
+    echo "The ${SERVICE_NAME} service is still installed and running."
+fi
+
+if ! $remove_binary && ! $uninstall_service; then
+    echo "Warning: The bootstrap node binary is still present, but the service status may have changed."
+    echo "You may need to restart the service or check its status."
+fi

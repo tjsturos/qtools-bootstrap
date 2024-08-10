@@ -56,12 +56,14 @@ After installation, you can use the following commands:
 - `update-bootstrap`: Update the Quilibrium Bootstrap Client
 - `manage-bootstrap`: Open the management menu for the Bootstrap Client
 
+These commands are available as aliases after you source your `.bashrc` file or log out and log back in. They use the locally installed scripts in your qtools-bootstrap directory.
+
 ### Updating the Bootstrap Client
 
 To update the Bootstrap Client, simply run:
 
 ```bash
-sudo update-bootstrap
+update-bootstrap
 ```
 
 This command will check for updates and apply them if available.
@@ -69,38 +71,26 @@ This command will check for updates and apply them if available.
 To force an update without checking for changes, use the `--force` or `-f` flag:
 
 ```bash
-sudo update-bootstrap --force
+update-bootstrap --force
 ```
 
 or
 
 ```bash
-sudo update-bootstrap -f
+update-bootstrap -f
 ```
 
 Note: While automatic updates are set up during installation, you can always run the update command manually if you want to check for updates immediately.
 
-### Management Menu
+### Managing the Bootstrap Client
 
-To access the management menu, run:
+To open the management menu, run:
 
 ```bash
-sudo manage-bootstrap
+manage-bootstrap
 ```
 
-The management menu provides the following options:
-
-1. View Service Status
-2. View Live Log Output
-3. Start Service
-4. Stop Service
-5. Restart Service
-6. Check for Updates
-7. View Last 50 Log Lines
-8. Uninstall
-9. Exit
-
-Simply follow the on-screen prompts to manage your Bootstrap Client.
+This will provide you with options to view the service status, logs, start/stop the service, and more.
 
 ### Uninstalling
 

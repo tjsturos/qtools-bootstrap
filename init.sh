@@ -111,15 +111,18 @@ WantedBy=multi-user.target" | sudo tee "/etc/systemd/system/${SERVICE_NAME}.serv
 # Function to add alias to bashrc
 add_alias_to_bashrc() {
     local bashrc_file="$1"
-    local alias_line="alias update-bootstrap='bash <(curl -sSf \"$REPO_RAW_URL/update-bootstrap.sh\") || echo \"Error: Failed to download or execute the update script\"'"
+    local qtools_dir="$(set_qtools_dir)"
+    local update_alias="alias update-bootstrap='sudo bash \"$qtools_dir/update-bootstrap.sh\"'"
+    local manage_alias="alias manage-bootstrap='bash \"$qtools_dir/manage-bootstrapclient.sh\"'"
     
     if ! grep -q "alias update-bootstrap" "$bashrc_file"; then
         echo "" >> "$bashrc_file"
-        echo "# Quilibrium Bootstrap update alias" >> "$bashrc_file"
-        echo "$alias_line" >> "$bashrc_file"
-        echo "Alias added to $bashrc_file"
+        echo "# Quilibrium Bootstrap aliases" >> "$bashrc_file"
+        echo "$update_alias" >> "$bashrc_file"
+        echo "$manage_alias" >> "$bashrc_file"
+        echo "Aliases added to $bashrc_file"
     else
-        echo "Alias already exists in $bashrc_file"
+        echo "Aliases already exist in $bashrc_file"
     fi
 }
 
