@@ -49,6 +49,7 @@ remove_service() {
 remove_cron() {
     echo "Removing cron job..."
     crontab -l | grep -v "update-bootstrap" | crontab -
+    sudo rm /usr/local/bin/update-bootstrap
 }
 
 # Function to remove binary
