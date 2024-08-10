@@ -29,7 +29,7 @@ if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
         exit 1
     fi
     # Set correct ownership
-    chown -R $ACTUAL_USER:$ACTUAL_USER "$qtools_dir"
+    sudo chown -R $ACTUAL_USER:$ACTUAL_USER "$qtools_dir"
     cd "$qtools_dir"
 else
     echo "Using existing qtools-bootstrap repository..."
