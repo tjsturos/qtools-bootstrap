@@ -38,34 +38,34 @@ pause() {
 # Function to view service status
 view_status() {
     echo -e "${GREEN}Service Status:${NC}"
-    systemctl status "$SERVICE_NAME"
+    sudo systemctl status "$SERVICE_NAME"
     pause
 }
 
 # Function to view live log output
 view_live_log() {
     echo -e "${GREEN}Live Log Output (press Ctrl+C to exit):${NC}"
-    journalctl -u "$SERVICE_NAME" -f
+    sudo journalctl -u "$SERVICE_NAME" -f
 }
 
 # Function to start the service
 start_service() {
     echo -e "${GREEN}Starting ${SERVICE_NAME} Service...${NC}"
-    systemctl start "$SERVICE_NAME"
+    sudo systemctl start "$SERVICE_NAME"
     pause
 }
 
 # Function to stop the service
 stop_service() {
     echo -e "${RED}Stopping ${SERVICE_NAME} Service...${NC}"
-    systemctl stop "$SERVICE_NAME"
+    sudo systemctl stop "$SERVICE_NAME"
     pause
 }
 
 # Function to restart the service
 restart_service() {
     echo -e "${YELLOW}Restarting ${SERVICE_NAME} Service...${NC}"
-    systemctl restart "$SERVICE_NAME"
+    sudo systemctl restart "$SERVICE_NAME"
     pause
 }
 

@@ -27,12 +27,12 @@ done
 
 # Function to update the repository
 update_repository() {
-    echo "Updating repository..."
     cd "$REPO_DIR"
+    echo "Fetching updates to the repository..."
     git fetch origin
     local changes=$(git rev-list HEAD...origin/v2.0-bootstrap --count)
     if [ "$changes" -eq "0" ] && [ $FORCE -eq 0 ]; then
-        echo "No updates available."
+        echo "No updates to the repository available."
         return 1
     fi
     git pull origin v2.0-bootstrap
@@ -50,8 +50,8 @@ rebuild_bootstrap_node() {
 # Function to update bootstrap
 update_bootstrap() {
     echo "Updating bootstrap..."
-    sudo systemctl stop "$SERVICE_NAME"
     if update_repository; then
+    sudo systemctl stop "$SERVICE_NAME"
         rebuild_bootstrap_node
         sudo systemctl start "$SERVICE_NAME"
         echo "Update completed."

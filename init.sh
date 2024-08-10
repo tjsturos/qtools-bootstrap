@@ -97,7 +97,7 @@ WantedBy=multi-user.target" | sudo tee "/etc/systemd/system/${SERVICE_NAME}.serv
         sudo systemctl daemon-reload
         sudo systemctl enable "${SERVICE_NAME}.service"
     fi
-    if ! systemctl is-active --quiet "$SERVICE_NAME"; then
+    if ! sudo systemctl is-active --quiet "$SERVICE_NAME"; then
         echo "Starting ${SERVICE_NAME} service..."
         sudo systemctl start "$SERVICE_NAME"
     fi
