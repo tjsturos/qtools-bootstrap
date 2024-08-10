@@ -102,7 +102,7 @@ uninstall_service() {
 while true
 do
     show_menu
-    read -p "Enter your choice [1-8]: " choice
+    read -p "Enter your choice [1-9]: " choice
     case $choice in
         1) view_status ;;
         2) view_live_log ;;
