@@ -28,6 +28,7 @@ show_menu() {
     echo "7. View Last 50 Log Lines"
     echo "8. Uninstall"
     echo "9. Exit"
+    echo "q. Exit"
 }
 
 # Function to pause
@@ -123,17 +124,17 @@ fi
 while true
 do
     show_menu
-    read -p "Enter your choice [1-9]: " choice
+    read -p "Enter your choice [1-9 or q to exit]: " choice
     case $choice in
-         1) view_status ;;
-         2) view_live_log ;;
-         3) start_service ;;
-         4) stop_service ;;
-         5) restart_service ;;
-         6) check_updates ;;
-         7) view_last_logs ;;
-         8) uninstall_service ;;
-         9) echo "Exiting..."; exit 0 ;;
-         *) echo -e "${RED}Error...${NC}" && sleep 2
-     esac
+        1) view_status ;;
+        2) view_live_log ;;
+        3) start_service ;;
+        4) stop_service ;;
+        5) restart_service ;;
+        6) check_updates ;;
+        7) view_last_logs ;;
+        8) uninstall_service ;;
+        9|q|Q) echo "Exiting..."; exit 0 ;;
+        *) echo -e "${RED}Invalid option. Please try again.${NC}" && sleep 2
+    esac
 done
