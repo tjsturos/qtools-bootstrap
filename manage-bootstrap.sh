@@ -30,16 +30,10 @@ show_menu() {
     echo "9 (or q). Exit"
 }
 
-# Function to pause
-pause() {
-    read -p "Press [Enter] key to continue..." fackEnterKey
-}
-
 # Function to view service status
 view_status() {
     echo -e "${GREEN}Service Status:${NC}"
     sudo systemctl status "$SERVICE_NAME"
-    pause
 }
 
 # Function to view live log output
@@ -52,35 +46,30 @@ view_live_log() {
 start_service() {
     echo -e "${GREEN}Starting ${SERVICE_NAME} Service...${NC}"
     sudo systemctl start "$SERVICE_NAME"
-    pause
 }
 
 # Function to stop the service
 stop_service() {
     echo -e "${RED}Stopping ${SERVICE_NAME} Service...${NC}"
     sudo systemctl stop "$SERVICE_NAME"
-    pause
 }
 
 # Function to restart the service
 restart_service() {
     echo -e "${YELLOW}Restarting ${SERVICE_NAME} Service...${NC}"
     sudo systemctl restart "$SERVICE_NAME"
-    pause
 }
 
 # Function to check for updates
 check_updates() {
     echo -e "${YELLOW}Checking for Updates...${NC}"
     /usr/local/bin/update-bootstrap
-    pause
 }
 
 # Function to view last 50 log lines
 view_last_logs() {
     echo -e "${GREEN}Last 50 Log Lines:${NC}"
     journalctl -u "$SERVICE_NAME" -n 50 --no-pager
-    pause
 }
 
 # Function to uninstall the service
@@ -95,7 +84,6 @@ uninstall_service() {
     else
         echo "Uninstallation cancelled."
     fi
-    pause
 }
 
 # Function to handle command-line arguments
