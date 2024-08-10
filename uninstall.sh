@@ -40,11 +40,10 @@ remove_auto_completion() {
 # Function to remove repository
 remove_repository() {
     echo "Removing qtools-bootstrap repository..."
-    rm -rf ~/qtools-bootstrap
+    rm -rf "$(set_qtools_dir)"
     remove_repo=true
     remove_auto_completion
     remove_aliases=true
-    remove_service=true
     remove_cron=true
 }
 
@@ -59,11 +58,13 @@ remove_aliases() {
 
 # Function to remove service
 remove_service() {
-    echo "Removing systemd service..."
-    sudo systemctl stop quilibrium-bootstrap
-    sudo systemctl disable quilibrium-bootstrap
-    sudo rm /etc/systemd/system/quilibrium-bootstrap.service
-    sudo systemctl daemon-reload
+    if [ "$remove_binary" = true ]; then
+        echo "Removing systemd service..."
+        sudo systemctl stop "$SERVICE_NAME"
+        sudo systemctl disable "$SERVICE_NAME"
+        sudo rm "/etc/systemd/system/${SERVICE_NAME}.service"
+        sudo systemctl daemon-reload
+    fi
 }
 
 # Function to remove cron job
@@ -75,7 +76,8 @@ remove_cron() {
 # Function to remove ceremonyclient
 remove_ceremonyclient() {
     echo "Removing ceremonyclient directory..."
-    rm -rf ~/ceremonyclient
+    rm -rf "$(set_repo_dir)"
+    remove_service=true
 }
 
 # Main uninstall process
@@ -84,35 +86,35 @@ echo "======================================="
 
 read -p "Do you want to remove the qtools-bootstrap repository? (y/N): " remove_repo_choice
 if [[ $remove_repo_choice =~ ^[Yy]$ ]]; then
-    remove_repository
+    remove_repo=true
+    remove_aliases=true
+    remove_cron=true
+    remove_auto_completion=true
 else
     read -p "Do you want to remove the manage-bootstrap and update-bootstrap aliases? (y/N): " remove_aliases_choice
     if [[ $remove_aliases_choice =~ ^[Yy]$ ]]; then
-        remove_aliases
-    fi
-
-    read -p "Do you want to remove the systemd service? (y/N): " remove_service_choice
-    if [[ $remove_service_choice =~ ^[Yy]$ ]]; then
-        remove_service
+        remove_aliases=true
+        remove_auto_completion=true
     fi
 
     read -p "Do you want to remove the cron job? (y/N): " remove_cron_choice
     if [[ $remove_cron_choice =~ ^[Yy]$ ]]; then
-        remove_cron
+        remove_cron=true
     fi
 
-    # Only ask about auto-completion if it wasn't already removed
+    # Only ask about auto-completion if it wasn't already set to be removed
     if [ "$remove_aliases" = false ]; then
-        read -p "Do you want to remove the auto-completion for manage-bootstrap? (y/N): " remove_completion
-        if [[ $remove_completion =~ ^[Yy]$ ]]; then
-            remove_auto_completion
+        read -p "Do you want to remove the auto-completion for manage-bootstrap? (y/N): " remove_completion_choice
+        if [[ $remove_completion_choice =~ ^[Yy]$ ]]; then
+            remove_auto_completion=true
         fi
     fi
 fi
 
 read -p "Do you want to remove the ceremonyclient directory? (y/N): " remove_ceremonyclient_choice
 if [[ $remove_ceremonyclient_choice =~ ^[Yy]$ ]]; then
-    remove_ceremonyclient
+    remove_ceremonyclient=true
+    remove_service=true
 fi
 
 # Perform the removals
@@ -122,12 +124,15 @@ fi
 if [ "$remove_aliases" = true ]; then
     remove_aliases
 fi
-if [ "$remove_service" = true ]; then
-    remove_service
-fi
 if [ "$remove_cron" = true ]; then
     remove_cron
 fi
+if [ "$remove_auto_completion" = true ]; then
+    remove_auto_completion
+fi
 if [ "$remove_ceremonyclient" = true ]; then
     remove_ceremonyclient
+fi
+if [ "$remove_service" = true ]; then
+    remove_service
 fi
