@@ -7,26 +7,12 @@ echo "This script will uninstall components of the Quilibrium Bootstrap Client."
 echo "Please select which components you want to uninstall:"
 
 # Initialize variables
-uninstall_service=false
-remove_binary=false
 remove_repo=false
-remove_cron=false
 remove_aliases=false
-remove_update_script=false
+remove_service=false
+remove_cron=false
 remove_auto_completion=false
-remove_ceremonyclient=false
-
-# Function to get user input
-get_yes_no() {
-    while true; do
-        read -p "$1 (y/n): " yn
-        case $yn in
-            [Yy]* ) return 0;;
-            [Nn]* ) return 1;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-}
+remove_binary=false
 
 # Function to remove auto-completion
 remove_auto_completion() {
@@ -41,10 +27,6 @@ remove_auto_completion() {
 remove_repository() {
     echo "Removing qtools-bootstrap repository..."
     rm -rf "$(set_qtools_dir)"
-    remove_repo=true
-    remove_auto_completion
-    remove_aliases=true
-    remove_cron=true
 }
 
 # Function to remove aliases
@@ -52,19 +34,15 @@ remove_aliases() {
     echo "Removing aliases..."
     sed -i '/alias manage-bootstrap/d' ~/.bashrc
     sed -i '/alias update-bootstrap/d' ~/.bashrc
-    remove_aliases=true
-    remove_auto_completion
 }
 
 # Function to remove service
 remove_service() {
-    if [ "$remove_binary" = true ]; then
-        echo "Removing systemd service..."
-        sudo systemctl stop "$SERVICE_NAME"
-        sudo systemctl disable "$SERVICE_NAME"
-        sudo rm "/etc/systemd/system/${SERVICE_NAME}.service"
-        sudo systemctl daemon-reload
-    fi
+    echo "Removing systemd service..."
+    sudo systemctl stop "$SERVICE_NAME"
+    sudo systemctl disable "$SERVICE_NAME"
+    sudo rm "/etc/systemd/system/${SERVICE_NAME}.service"
+    sudo systemctl daemon-reload
 }
 
 # Function to remove cron job
@@ -73,11 +51,11 @@ remove_cron() {
     crontab -l | grep -v "update-bootstrap" | crontab -
 }
 
-# Function to remove ceremonyclient
-remove_ceremonyclient() {
-    echo "Removing ceremonyclient directory..."
-    rm -rf "$(set_repo_dir)"
-    remove_service=true
+# Function to remove binary
+remove_binary() {
+    echo "Removing bootstrap client binary..."
+    rm -f "$(set_repo_dir)/node/bootstrap-node"
+    rm -f /usr/local/bin/node
 }
 
 # Main uninstall process
@@ -111,10 +89,59 @@ else
     fi
 fi
 
-read -p "Do you want to remove the ceremonyclient directory? (y/N): " remove_ceremonyclient_choice
-if [[ $remove_ceremonyclient_choice =~ ^[Yy]$ ]]; then
-    remove_ceremonyclient=true
+read -p "Do you want to remove the bootstrap client binary and service? (y/N): " remove_binary_choice
+if [[ $remove_binary_choice =~ ^[Yy]$ ]]; then
+    remove_binary=true
     remove_service=true
+fi
+
+# Summarize choices and ask for confirmation
+echo -e "\nYou have chosen to remove the following components:"
+if [ "$remove_repo" = true ]; then
+    echo "- qtools-bootstrap repository (includes aliases, cron job, and auto-completion)"
+else
+    if [ "$remove_aliases" = true ]; then
+        echo "- Aliases (manage-bootstrap and update-bootstrap)"
+    fi
+    if [ "$remove_cron" = true ]; then
+        echo "- Cron job"
+    fi
+    if [ "$remove_auto_completion" = true ]; then
+        echo "- Auto-completion for manage-bootstrap"
+    fi
+fi
+if [ "$remove_binary" = true ]; then
+    echo "- Bootstrap client binary"
+    echo "- Systemd service ($SERVICE_NAME)"
+fi
+
+echo -e "\nConsequences:"
+if [ "$remove_repo" = true ]; then
+    echo "- You will lose all local modifications to the qtools-bootstrap scripts."
+    echo "- The manage-bootstrap and update-bootstrap commands will no longer be available."
+fi
+if [ "$remove_aliases" = true ]; then
+    echo "- The manage-bootstrap and update-bootstrap commands will no longer be available."
+fi
+if [ "$remove_cron" = true ]; then
+    echo "- Automatic updates for the bootstrap client will no longer occur."
+fi
+if [ "$remove_auto_completion" = true ]; then
+    echo "- Tab completion for manage-bootstrap will no longer work."
+fi
+if [ "$remove_service" = true ]; then
+    echo "- The systemd service for the bootstrap client will be removed." 
+    echo "- The bootstrap client will no longer be managed by systemd and will not start automatically at boot. Manual management of the bootstrap client is required."
+fi
+if [ "$remove_binary" = true ]; then
+    echo "- The bootstrap client binary will be removed, but the ceremonyclient directory will remain intact."
+    echo "- You will need to manually remove the ceremonyclient directory if you no longer need it."
+fi
+
+read -p $'\nAre you sure you want to proceed with the uninstallation? (y/N): ' confirm
+if [[ ! $confirm =~ ^[Yy]$ ]]; then
+    echo "Uninstallation cancelled."
+    exit 0
 fi
 
 # Perform the removals
@@ -130,9 +157,11 @@ fi
 if [ "$remove_auto_completion" = true ]; then
     remove_auto_completion
 fi
-if [ "$remove_ceremonyclient" = true ]; then
-    remove_ceremonyclient
+if [ "$remove_binary" = true ]; then
+    remove_binary
 fi
 if [ "$remove_service" = true ]; then
     remove_service
 fi
+
+echo "Uninstallation process completed."
