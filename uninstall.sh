@@ -95,6 +95,7 @@ if $remove_aliases; then
     sed -i '/alias update-bootstrap/d' "$HOME_DIR/.bashrc"
     sed -i '/alias manage-bootstrap/d' "$HOME_DIR/.bashrc"
     sed -i '/# Quilibrium Bootstrap update aliases/d' "$HOME_DIR/.bashrc"
+    sed -i '/# Quilibrium Bootstrap aliases/d' "$HOME_DIR/.bashrc"
 fi
 
 echo "Uninstallation completed based on your choices."
