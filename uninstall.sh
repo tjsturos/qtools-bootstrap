@@ -118,7 +118,6 @@ fi
 echo -e "\nConsequences:"
 if [ "$remove_repo" = true ]; then
     echo "- You will lose all local modifications to the qtools-bootstrap scripts."
-    echo "- The manage-bootstrap and update-bootstrap commands will no longer be available."
 fi
 if [ "$remove_aliases" = true ]; then
     echo "- The manage-bootstrap and update-bootstrap commands will no longer be available."
