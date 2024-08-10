@@ -33,7 +33,7 @@ get_yes_no "Remove the qtools-bootstrap repository?" && remove_repo=true
 get_yes_no "Remove the cron job and update-bootstrap script?" && remove_cron=true && remove_update_script=true
 get_yes_no "Remove the update-bootstrap and manage-bootstrap aliases?" && remove_aliases=true
 
-# Check for inconsistent choices
+# Check for inconsistent choices and dependencies
 if $remove_binary && ! $uninstall_service; then
     echo "Warning: Removing the node binary will break the service. The service must be uninstalled if the binary is removed."
     get_yes_no "Do you want to uninstall the service as well?" && uninstall_service=true
@@ -41,6 +41,13 @@ if $remove_binary && ! $uninstall_service; then
         echo "Cannot proceed with inconsistent choices. Exiting."
         exit 1
     fi
+fi
+
+if $remove_repo; then
+    echo "Warning: Removing the qtools-bootstrap repository will also remove the cron job and update-bootstrap script."
+    remove_cron=true
+    remove_update_script=true
+    remove_aliases=true
 fi
 
 # Confirm uninstallation
@@ -77,6 +84,11 @@ if $remove_cron; then
     (crontab -l | grep -v "update-bootstrap") | crontab -
 fi
 
+if $remove_update_script; then
+    echo "Removing the update-bootstrap script..."
+    sudo rm -f "/usr/local/bin/update-bootstrap"
+fi
+
 if $remove_aliases; then
     echo "Removing the aliases from .bashrc..."
     HOME_DIR=$(get_home_dir)
@@ -84,10 +96,6 @@ if $remove_aliases; then
     sed -i '/alias manage-bootstrap/d' "$HOME_DIR/.bashrc"
     sed -i '/# Quilibrium Bootstrap aliases/d' "$HOME_DIR/.bashrc"
 fi
-
-# Always remove the update-bootstrap script
-echo "Removing the update-bootstrap script..."
-sudo rm -f "/usr/local/bin/update-bootstrap"
 
 echo "Uninstallation completed based on your choices."
 echo "You may need to log out and log back in for all changes to take effect."
@@ -101,4 +109,12 @@ fi
 if ! $remove_binary && ! $uninstall_service; then
     echo "Warning: The bootstrap node binary is still present, but the service status may have changed."
     echo "You may need to restart the service or check its status."
+fi
+
+if ! $remove_cron; then
+    echo "The cron job for automatic updates is still active."
+    if $remove_update_script; then
+        echo "Warning: The update-bootstrap script has been removed, but the cron job is still present."
+        echo "You may want to remove the cron job manually or reinstall the update-bootstrap script."
+    fi
 fi
