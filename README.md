@@ -52,20 +52,34 @@ This will set up the ceremonyclient in `~/ceremonyclient` (if not already instal
 
 ## Usage
 
-The `manage-bootstrap` script now supports both interactive menu and command-line arguments:
+The `manage-bootstrap` script provides an interactive menu for managing the Quilibrium Bootstrap Client. To use it:
 
-1. Interactive menu: Simply run `manage-bootstrap` without any arguments.
-2. Command-line arguments: Use `manage-bootstrap <command>`, where `<command>` can be:
-   - `status`: View service status
-   - `log`: View live log output
-   - `start`: Start the service
-   - `stop`: Stop the service
-   - `restart`: Restart the service
-   - `update`: Check for updates
-   - `lastlog`: View last 50 log lines
-   - `uninstall`: Uninstall the service
+1. Run the script: `manage-bootstrap`
+2. You'll see a menu with various options. Enter the number or letter corresponding to the action you want to perform.
+3. To exit the script, you can either:
+   - Select option 9 from the menu
+   - Press 'q' or 'Q' at any time
+   - Press Ctrl+C at any time
 
-Bash completion is available for the command-line arguments. It is automatically set up during installation. If you need to use it immediately after installation without restarting your shell, run:
+The script responds immediately to your input without requiring you to press Enter.
+
+The script also supports direct command-line arguments for quick actions:
+
+```bash
+manage-bootstrap <command>
+```
+
+Where `<command>` can be:
+- `status`: View service status
+- `log`: View live log output
+- `start`: Start the service
+- `stop`: Stop the service
+- `restart`: Restart the service
+- `update`: Check for updates
+- `lastlog`: View last 50 log lines
+- `uninstall`: Uninstall the service
+
+Bash completion is available for these command-line arguments. It is automatically set up during installation. If you need to use it immediately after installation without restarting your shell, run:
 
 ```bash
 source ~/.bashrc
