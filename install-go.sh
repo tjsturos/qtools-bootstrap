@@ -1,7 +1,13 @@
 #!/bin/bash
 
 # Source the utils file
-source "$(dirname "$0")/utils.sh"
+if [ "$SUDO_USER" ]; then
+    source "/home/$SUDO_USER/qtools-bootstrap/utils.sh"
+elif [ "$HOME" = "/root" ]; then
+    source "/root/qtools-bootstrap/utils.sh"
+else
+    source "$HOME/qtools-bootstrap/utils.sh"
+fi
 
 # Install Go 1.22.4
 install_go() {

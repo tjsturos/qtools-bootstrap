@@ -44,17 +44,6 @@ else
     exit 1
 fi
 
-# Function to ensure Go 1.22.4 is installed
-ensure_go_installed() {
-    if ! command -v go &> /dev/null || [[ "$(go version | awk '{print $3}' | sed 's/go//')" != "1.22.4" ]]; then
-        echo "Go 1.22.4 is not installed. Installing now..."
-        bash "$(dirname "$0")/install-go.sh"
-        # Reload the shell configuration to update PATH
-        source "$HOME/.bashrc"
-    else
-        echo "Go 1.22.4 is already installed."
-    fi
-}
 
 # Function to build the bootstrap node
 build_bootstrap_node() {
@@ -138,7 +127,7 @@ add_alias_to_bashrc() {
 echo "Initializing Quilibrium Bootstrap setup..."
 
 # Ensure Go 1.22.4 is installed
-ensure_go_installed
+bash "$(set_repo_dir)/install-go.sh"
 
 # Setup the repository
 setup_repository

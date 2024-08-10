@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Source the utils file using a more robust method
+# Source the utils file
 if [ "$SUDO_USER" ]; then
     source "/home/$SUDO_USER/qtools-bootstrap/utils.sh"
 elif [ "$HOME" = "/root" ]; then
