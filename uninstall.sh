@@ -34,8 +34,6 @@ remove_auto_completion() {
         echo "Removing auto-completion for manage-bootstrap..."
         sudo rm /etc/bash_completion.d/manage-bootstrap-completion.sh
         echo "Auto-completion removed. You may need to restart your shell for changes to take effect."
-    else
-        echo "Auto-completion file not found. Skipping removal."
     fi
 }
 
