@@ -109,7 +109,7 @@ add_alias_to_bashrc() {
     local bashrc_file="$1"
     local qtools_dir="$(set_qtools_dir)"
     local update_alias="alias update-bootstrap='sudo bash \"$qtools_dir/update-bootstrap.sh\"'"
-    local manage_alias="alias manage-bootstrap='bash \"$qtools_dir/manage-bootstrapclient.sh\"'"
+    local manage_alias="alias manage-bootstrap='bash \"$qtools_dir/manage-bootstrap.sh\"'"
     
     if ! grep -q "alias update-bootstrap" "$bashrc_file"; then
         echo "" >> "$bashrc_file"
