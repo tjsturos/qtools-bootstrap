@@ -131,5 +131,3 @@ fi
 if [ "$remove_ceremonyclient" = true ]; then
     remove_ceremonyclient
 fi
-
-echo "Uninstallation process completed."
