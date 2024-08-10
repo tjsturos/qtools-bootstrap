@@ -135,7 +135,7 @@ echo "Auto-completion for manage-bootstrap has been set up. You may need to rest
 echo "Initializing Quilibrium Bootstrap setup..."
 
 # Ensure Go 1.22.4 is installed
-bash "$(set_repo_dir)/install-go.sh"
+bash "$(set_qtools_dir)/install-go.sh"
 
 # Setup the repository
 setup_repository
