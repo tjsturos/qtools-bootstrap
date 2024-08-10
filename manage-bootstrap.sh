@@ -27,7 +27,7 @@ show_menu() {
     echo "6. Check for Updates"
     echo "7. View Last 50 Log Lines"
     echo "8. Uninstall"
-    echo "9. Exit"
+    echo "9 (or q). Exit"
     echo "q. Exit"
 }
 
@@ -124,7 +124,10 @@ fi
 while true
 do
     show_menu
-    read -p "Enter your choice [1-9 or q to exit]: " choice
+    echo -n "Enter your choice [1-9 or q to exit]: "
+    read -n 1 -r choice
+    echo  # move to a new line
+
     case $choice in
         1) view_status ;;
         2) view_live_log ;;
