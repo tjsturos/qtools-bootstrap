@@ -85,12 +85,12 @@ view_last_logs() {
 
 # Function to uninstall the service
 uninstall_service() {
-    echo -e "${RED}Warning: This will uninstall the ${SERVICE_NAME} service and remove all associated files.${NC}"
-    read -p "Are you sure you want to proceed? (y/N): " confirm
+    echo -e "${YELLOW}This will start the uninstallation process for the Quilibrium Bootstrap Client.${NC}"
+    echo -e "${YELLOW}You will be asked which components you want to uninstall.${NC}"
+    read -p "Do you want to proceed? (y/N): " confirm
     if [[ $confirm == [yY] ]]; then
-        echo "Uninstalling..."
         sudo bash "$(dirname "$0")/uninstall.sh"
-        echo "Uninstallation completed. Exiting management script."
+        echo "Uninstallation process completed. Exiting management script."
         exit 0
     else
         echo "Uninstallation cancelled."

@@ -53,7 +53,7 @@ This will set up the ceremonyclient in `~/ceremonyclient` (if not already instal
 After installation, you can use the following commands:
 
 - `update-bootstrap`: Update the Quilibrium Bootstrap Client
-- `manage-bootstrapclient`: Open the management menu for the Bootstrap Client
+- `manage-bootstrap`: Open the management menu for the Bootstrap Client
 
 ### Updating the Bootstrap Client
 
@@ -84,7 +84,7 @@ Note: While automatic updates are set up during installation, you can always run
 To access the management menu, run:
 
 ```bash
-sudo manage-bootstrapclient
+sudo manage-bootstrap
 ```
 
 The management menu provides the following options:
@@ -103,16 +103,13 @@ Simply follow the on-screen prompts to manage your Bootstrap Client.
 
 ### Uninstalling
 
-To uninstall the Quilibrium Bootstrap Client, you can either:
-
-1. Use the management menu and select the "Uninstall" option.
-2. Run the uninstall script directly:
+To uninstall the Bootstrap Client, you can use the management menu or run the uninstall script directly:
 
 ```bash
 sudo bash ~/qtools-bootstrap/uninstall.sh
 ```
 
-This will remove most components of the Bootstrap Client, including the service, qtools-bootstrap repository, and cron job. However, the ceremonyclient directory will be left intact.
+The uninstallation process will ask you which components you want to remove, allowing you to keep certain parts of the setup if desired.
 
 ## Automatic Updates
 
