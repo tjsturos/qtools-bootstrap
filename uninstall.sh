@@ -145,9 +145,7 @@ if [[ ! $confirm =~ ^[Yy]$ ]]; then
 fi
 
 # Perform the removals
-if [ "$remove_repo" = true ]; then
-    remove_repository
-fi
+
 if [ "$remove_aliases" = true ]; then
     remove_aliases
 fi
@@ -157,11 +155,14 @@ fi
 if [ "$remove_auto_completion" = true ]; then
     remove_auto_completion
 fi
+if [ "$remove_service" = true ]; then
+    remove_service
+fi
 if [ "$remove_binary" = true ]; then
     remove_binary
 fi
-if [ "$remove_service" = true ]; then
-    remove_service
+if [ "$remove_repo" = true ]; then
+    remove_repository
 fi
 
 echo "Uninstallation process completed."
