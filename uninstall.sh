@@ -14,6 +14,7 @@ remove_cron=false
 remove_aliases=false
 remove_update_script=false
 remove_auto_completion=false
+remove_ceremonyclient=false
 
 # Function to get user input
 get_yes_no() {
@@ -27,109 +28,110 @@ get_yes_no() {
     done
 }
 
-# Ask about each component
-get_yes_no "Uninstall and remove the ${SERVICE_NAME} service?" && uninstall_service=true
-get_yes_no "Remove the bootstrap node binary?" && remove_binary=true
-get_yes_no "Remove the qtools-bootstrap repository?" && remove_repo=true
-get_yes_no "Remove the cron job and update-bootstrap script?" && remove_cron=true && remove_update_script=true
-get_yes_no "Remove the update-bootstrap and manage-bootstrap aliases?" && remove_aliases=true
-get_yes_no "Remove the auto-completion for manage-bootstrap?" && remove_auto_completion=true
-
-# Check for inconsistent choices and dependencies
-if $remove_binary && ! $uninstall_service; then
-    echo "Warning: Removing the node binary will break the service. The service must be uninstalled if the binary is removed."
-    get_yes_no "Do you want to uninstall the service as well?" && uninstall_service=true
-    if ! $uninstall_service; then
-        echo "Cannot proceed with inconsistent choices. Exiting."
-        exit 1
+# Function to remove auto-completion
+remove_auto_completion() {
+    if [ -f /etc/bash_completion.d/manage-bootstrap-completion.bash ]; then
+        echo "Removing auto-completion for manage-bootstrap..."
+        sudo rm /etc/bash_completion.d/manage-bootstrap-completion.bash
+        echo "Auto-completion removed. You may need to restart your shell for changes to take effect."
+    else
+        echo "Auto-completion file not found. Skipping removal."
     fi
-fi
+}
 
-if $remove_repo; then
-    echo "Warning: Removing the qtools-bootstrap repository will also remove the cron job and update-bootstrap script."
-    remove_cron=true
-    remove_update_script=true
+# Function to remove repository
+remove_repository() {
+    echo "Removing qtools-bootstrap repository..."
+    rm -rf ~/qtools-bootstrap
+    remove_repo=true
+    remove_auto_completion
     remove_aliases=true
-    remove_auto_completion=true
-fi
+    remove_service=true
+    remove_cron=true
+}
 
-if $remove_aliases; then
-    remove_auto_completion=true
-fi
+# Function to remove aliases
+remove_aliases() {
+    echo "Removing aliases..."
+    sed -i '/alias manage-bootstrap/d' ~/.bashrc
+    sed -i '/alias update-bootstrap/d' ~/.bashrc
+    remove_aliases=true
+    remove_auto_completion
+}
 
-# Confirm uninstallation
-echo "You have chosen to:"
-$uninstall_service && echo "- Uninstall the ${SERVICE_NAME} service"
-$remove_binary && echo "- Remove the bootstrap node binary"
-$remove_repo && echo "- Remove the qtools-bootstrap repository"
-$remove_cron && echo "- Remove the cron job and update-bootstrap script"
-$remove_aliases && echo "- Remove the aliases"
-$remove_auto_completion && echo "- Remove the auto-completion for manage-bootstrap"
-
-get_yes_no "Are you sure you want to proceed with the uninstallation?" || exit 0
-
-# Perform uninstallation based on user choices
-if $uninstall_service; then
-    echo "Stopping and removing the ${SERVICE_NAME} service..."
-    sudo systemctl stop "${SERVICE_NAME}"
-    sudo systemctl disable "${SERVICE_NAME}"
-    sudo rm -f "/etc/systemd/system/${SERVICE_NAME}.service"
+# Function to remove service
+remove_service() {
+    echo "Removing systemd service..."
+    sudo systemctl stop quilibrium-bootstrap
+    sudo systemctl disable quilibrium-bootstrap
+    sudo rm /etc/systemd/system/quilibrium-bootstrap.service
     sudo systemctl daemon-reload
-fi
+}
 
-if $remove_binary; then
-    echo "Removing the bootstrap node binary..."
-    sudo rm -f "/usr/local/bin/node"
-fi
+# Function to remove cron job
+remove_cron() {
+    echo "Removing cron job..."
+    crontab -l | grep -v "update-bootstrap" | crontab -
+}
 
-if $remove_repo; then
-    echo "Removing the qtools-bootstrap repository..."
-    rm -rf "$(set_qtools_dir)"
-fi
+# Function to remove ceremonyclient
+remove_ceremonyclient() {
+    echo "Removing ceremonyclient directory..."
+    rm -rf ~/ceremonyclient
+}
 
-if $remove_cron; then
-    echo "Removing the cron job..."
-    (crontab -l | grep -v "update-bootstrap") | crontab -
-fi
+# Main uninstall process
+echo "Quilibrium Bootstrap Client Uninstaller"
+echo "======================================="
 
-if $remove_update_script; then
-    echo "Removing the update-bootstrap script..."
-    sudo rm -f "/usr/local/bin/update-bootstrap"
-fi
-
-if $remove_aliases; then
-    echo "Removing the aliases from .bashrc..."
-    HOME_DIR=$(get_home_dir)
-    sed -i '/alias update-bootstrap/d' "$HOME_DIR/.bashrc"
-    sed -i '/alias manage-bootstrap/d' "$HOME_DIR/.bashrc"
-    sed -i '/# Quilibrium Bootstrap update aliases/d' "$HOME_DIR/.bashrc"
-    sed -i '/# Quilibrium Bootstrap aliases/d' "$HOME_DIR/.bashrc"
-fi
-
-if $remove_auto_completion; then
-    echo "Removing auto-completion for manage-bootstrap..."
-    sudo rm /etc/bash_completion.d/manage-bootstrap-completion.bash
-    echo "Auto-completion removed. You may need to restart your shell for changes to take effect."
-fi
-
-echo "Uninstallation completed based on your choices."
-echo "You may need to log out and log back in for all changes to take effect."
-
-if $uninstall_service; then
-    echo "The ${SERVICE_NAME} service has been uninstalled."
+read -p "Do you want to remove the qtools-bootstrap repository? (y/N): " remove_repo_choice
+if [[ $remove_repo_choice =~ ^[Yy]$ ]]; then
+    remove_repository
 else
-    echo "The ${SERVICE_NAME} service is still installed and running."
-fi
+    read -p "Do you want to remove the manage-bootstrap and update-bootstrap aliases? (y/N): " remove_aliases_choice
+    if [[ $remove_aliases_choice =~ ^[Yy]$ ]]; then
+        remove_aliases
+    fi
 
-if ! $remove_binary && ! $uninstall_service; then
-    echo "Warning: The bootstrap node binary is still present, but the service status may have changed."
-    echo "You may need to restart the service or check its status."
-fi
+    read -p "Do you want to remove the systemd service? (y/N): " remove_service_choice
+    if [[ $remove_service_choice =~ ^[Yy]$ ]]; then
+        remove_service
+    fi
 
-if ! $remove_cron; then
-    echo "The cron job for automatic updates is still active."
-    if $remove_update_script; then
-        echo "Warning: The update-bootstrap script has been removed, but the cron job is still present."
-        echo "You may want to remove the cron job manually or reinstall the update-bootstrap script."
+    read -p "Do you want to remove the cron job? (y/N): " remove_cron_choice
+    if [[ $remove_cron_choice =~ ^[Yy]$ ]]; then
+        remove_cron
+    fi
+
+    # Only ask about auto-completion if it wasn't already removed
+    if [ "$remove_aliases" = false ]; then
+        read -p "Do you want to remove the auto-completion for manage-bootstrap? (y/N): " remove_completion
+        if [[ $remove_completion =~ ^[Yy]$ ]]; then
+            remove_auto_completion
+        fi
     fi
 fi
+
+read -p "Do you want to remove the ceremonyclient directory? (y/N): " remove_ceremonyclient_choice
+if [[ $remove_ceremonyclient_choice =~ ^[Yy]$ ]]; then
+    remove_ceremonyclient
+fi
+
+# Perform the removals
+if [ "$remove_repo" = true ]; then
+    remove_repository
+fi
+if [ "$remove_aliases" = true ]; then
+    remove_aliases
+fi
+if [ "$remove_service" = true ]; then
+    remove_service
+fi
+if [ "$remove_cron" = true ]; then
+    remove_cron
+fi
+if [ "$remove_ceremonyclient" = true ]; then
+    remove_ceremonyclient
+fi
+
+echo "Uninstallation process completed."
