@@ -47,7 +47,6 @@ fi
 build_bootstrap_node() {
     echo "Building bootstrap node..."
     cd "$(set_repo_dir)/node"
-    ensure_go_installed
     if ! go build -o bootstrap-node; then
         echo "Failed to build bootstrap node. Please check your Go installation."
         exit 1
