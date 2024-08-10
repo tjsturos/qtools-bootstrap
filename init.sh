@@ -28,8 +28,6 @@ if [[ ! -f "$(dirname "$0")/utils.sh" ]]; then
         echo "Failed to clone qtools-bootstrap repository"
         exit 1
     fi
-    # Set correct ownership
-    sudo chown -R $ACTUAL_USER:$ACTUAL_USER "$qtools_dir"
     cd "$qtools_dir"
 else
     echo "Using existing qtools-bootstrap repository..."
@@ -75,8 +73,6 @@ setup_repository() {
             echo "Failed to clone ceremonyclient repository"
             exit 1
         fi
-        # Set correct ownership
-        chown -R $ACTUAL_USER:$ACTUAL_USER "$repo_dir"
     fi
     cd "$repo_dir"
     echo "Updating repository..."
@@ -153,8 +149,5 @@ if [[ ! -f "$SCRIPT_PATH" ]]; then
     echo "Setting up update-bootstrap script..."
     sudo ln -sf "$(set_repo_dir)/update-bootstrap.sh" "$SCRIPT_PATH"
 fi
-
-# Ensure correct ownership of the home directory contents
-chown -R $ACTUAL_USER:$ACTUAL_USER "$HOME_DIR"
 
 echo "Installation completed. Please run 'source ~/.bashrc' or log out and log back in to use the 'update-bootstrap' command."
