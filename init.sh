@@ -123,11 +123,11 @@ add_alias_to_bashrc() {
 
 # Copy the auto-complete file
 echo "Setting up auto-completion for manage-bootstrap..."
-sudo cp "$HOME_DIR/qtools-bootstrap/manage-bootstrap-completion.bash" /etc/bash_completion.d/
-sudo chmod +x /etc/bash_completion.d/manage-bootstrap-completion.bash
+sudo cp "$HOME_DIR/qtools-bootstrap/manage-bootstrap-completion.sh" /etc/bash_completion.d/
+sudo chmod +x /etc/bash_completion.d/manage-bootstrap-completion.sh
 
 # Source the completion script for immediate use
-source /etc/bash_completion.d/manage-bootstrap-completion.bash
+source /etc/bash_completion.d/manage-bootstrap-completion.sh
 
 echo "Auto-completion for manage-bootstrap has been set up. You may need to restart your shell or run 'source ~/.bashrc' to use it immediately."
 
