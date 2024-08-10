@@ -15,10 +15,10 @@ The script will automatically install Go 1.22.4 if it's not already present on y
 To get started quickly, run the following command in your terminal:
 
 ```bash
-curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh | sudo bash
+curl -s https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main/init.sh | bash
 ```
 
-This command will download and run the initialization script with sudo privileges. The script will:
+This command will download and run the initialization script. The script will:
 1. Set up or update the qtools-bootstrap repository in your home directory (`~/qtools-bootstrap`).
 2. Install Go 1.22.4 if it's not already installed.
 3. Set up the ceremonyclient in your home directory (`~/ceremonyclient`) if not already installed.
@@ -26,7 +26,7 @@ This command will download and run the initialization script with sudo privilege
 5. Set up a cron job for the current user to check for updates every 10 minutes.
 6. Perform necessary configurations and start the bootstrap client service.
 
-This process works correctly even when run with sudo, ensuring all files are placed in the correct user's home directory and the cron job is set up for the appropriate user.
+This process will prompt for sudo privileges when needed, ensuring all files are placed in the correct user's home directory and the cron job is set up for the appropriate user.
 
 ## Manual Setup
 
@@ -42,9 +42,9 @@ If you prefer to set things up manually, follow these steps:
    cd ~/qtools-bootstrap
    ```
 
-3. Run the initialization script with sudo privileges:
+3. Run the initialization script:
    ```
-   sudo bash init.sh
+   bash init.sh
    ```
 
 This will set up the ceremonyclient in `~/ceremonyclient` (if not already installed) and switch to the `v2.0-bootstrap` branch.
@@ -97,7 +97,7 @@ This will provide you with options to view the service status, logs, start/stop 
 To uninstall the Bootstrap Client, you can use the management menu or run the uninstall script directly:
 
 ```bash
-sudo bash ~/qtools-bootstrap/uninstall.sh
+bash ~/qtools-bootstrap/uninstall.sh
 ```
 
 The uninstallation process will ask you which components you want to remove, allowing you to keep certain parts of the setup if desired.
@@ -110,7 +110,7 @@ The installation process sets up a cron job that checks for updates every 10 min
 
 If you encounter any issues:
 
-1. Make sure you're running the scripts with sudo privileges.
+1. Make sure you have sudo privileges on your system.
 2. Check the service status using the management menu.
 3. View the logs for any error messages.
 
