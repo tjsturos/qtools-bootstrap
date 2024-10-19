@@ -66,7 +66,7 @@ show_menu() {
     echo "3. Start Service"
     echo "4. Stop Service"
     echo "5. Restart Service"
-    echo "6. Check for Updates"
+    echo "6. Update Bootstrap"
     echo "7. View Last 50 Log Lines"
     echo "8. Uninstall"
     echo "9 (or q). Exit"
