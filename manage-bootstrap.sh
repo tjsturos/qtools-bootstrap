@@ -35,11 +35,10 @@ get_status_and_uptime() {
 # Function to get last update time of node binary
 get_last_link_update_time() {
     local node_path="/usr/local/bin/node"
-    if [ -f "$node_path" ]; then
-        local last_modified=$(stat -c %y "$node_path")
-        echo -e "${GREEN}Last update time of node binary: $last_modified${NC}"
+    if [ -L "$node_path" ]; then
+        echo -e "${GREEN}Link to node binary exists: $node_path${NC}"
     else
-        echo -e "${RED}Node binary not found at $node_path${NC}"
+        echo -e "${RED}Link to node binary not found at $node_path${NC}"
     fi
 }
 
@@ -50,7 +49,7 @@ get_bootstrap_node_last_modified() {
         local last_modified=$(stat -c %y "$bootstrap_node_path")
         echo -e "${GREEN}Last modified date of bootstrap-node binary: $last_modified${NC}"
     else
-        echo -e "${RED}bootstrap-node binary not found at $bootstrap_node_path${NC}"
+        echo -e "${RED}The bootstrap-node binary was not found at $bootstrap_node_path${NC}"
     fi
 }
 
