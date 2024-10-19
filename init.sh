@@ -129,7 +129,7 @@ add_alias_to_bashrc() {
 add_manage_script_to_bashrc() {
     local bashrc_file="$1"
     local manage_script_path="$(set_qtools_dir)/manage-bootstrap.sh"
-    if ! grep -q "manage-bootstrap" "$bashrc_file"; then
+    if ! grep -q "alias manage-bootstrap" "$bashrc_file"; then
         echo "$manage_script_path" >> "$bashrc_file"
     fi
 }
