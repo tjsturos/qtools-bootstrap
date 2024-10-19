@@ -43,8 +43,43 @@ update_repository() {
 rebuild_bootstrap_node() {
     echo "Rebuilding bootstrap node..."
     cd "$REPO_DIR/node"
-    go build -o bootstrap-node
-    sudo ln -sf "$REPO_DIR/node/bootstrap-node" /usr/local/bin/node
+    # Get current time before build
+    local pre_build_time=$(date +%s)
+
+    # Perform the build
+    if ! go build -o bootstrap-node; then
+        echo "Failed to build bootstrap node. Please check your Go installation."
+        exit 1
+    fi
+
+    # Check if the bootstrap-node file is newer than pre-build time
+    if [ -f "bootstrap-node" ]; then
+        local file_mtime=$(stat -c %Y bootstrap-node)
+        if [ $file_mtime -gt $pre_build_time ]; then
+            echo "Bootstrap node successfully built and is newer than pre-build time."
+        else
+            echo "Warning: Bootstrap node file is not newer than pre-build time. Build may have failed silently."
+        fi
+    else
+        echo "Error: bootstrap-node file not found after build attempt."
+        exit 1
+    fi
+
+    local link_path="/usr/local/bin/node"
+    # Check if the link exists and points to the bootstrap-node file
+    if [ -L "$link_path" ]; then
+        local target=$(readlink -f "$link_path")
+        if [ "$target" == "$REPO_DIR/node/bootstrap-node" ]; then
+            echo "Symlink $link_path correctly points to bootstrap-node."
+        else
+            echo "Warning: Symlink $link_path exists but points to $target instead of $REPO_DIR/node/bootstrap-node."
+            echo "Updating symlink..."
+            sudo ln -sf "$REPO_DIR/node/bootstrap-node" "$link_path"
+        fi
+    else
+        echo "Symlink $link_path does not exist. Creating it..."
+        sudo ln -sf "$REPO_DIR/node/bootstrap-node" "$link_path"
+    fi
 }
 
 # Function to update bootstrap

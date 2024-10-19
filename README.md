@@ -52,34 +52,20 @@ This will set up the ceremonyclient in `~/ceremonyclient` (if not already instal
 
 ## Usage
 
-The `manage-bootstrap` script provides an interactive menu for managing the Quilibrium Bootstrap Client. To use it:
+The `manage-bootstrap` script now supports both interactive menu and command-line arguments:
 
-1. Run the script: `manage-bootstrap`
-2. You'll see a menu with various options. Enter the number or letter corresponding to the action you want to perform.
-3. To exit the script, you can either:
-   - Select option 9 from the menu
-   - Press 'q' or 'Q' at any time
-   - Press Ctrl+C at any time
+1. Interactive menu: Simply run `manage-bootstrap` without any arguments.
+2. Command-line arguments: Use `manage-bootstrap <command>`, where `<command>` can be:
+   - `status`: View service status
+   - `log`: View live log output
+   - `start`: Start the service
+   - `stop`: Stop the service
+   - `restart`: Restart the service
+   - `update`: Check for updates
+   - `lastlog`: View last 50 log lines
+   - `uninstall`: Uninstall the service
 
-The script responds immediately to your input without requiring you to press Enter.
-
-The script also supports direct command-line arguments for quick actions:
-
-```bash
-manage-bootstrap <command>
-```
-
-Where `<command>` can be:
-- `status`: View service status
-- `log`: View live log output
-- `start`: Start the service
-- `stop`: Stop the service
-- `restart`: Restart the service
-- `update`: Check for updates
-- `lastlog`: View last 50 log lines
-- `uninstall`: Uninstall the service
-
-Bash completion is available for these command-line arguments. It is automatically set up during installation. If you need to use it immediately after installation without restarting your shell, run:
+Bash completion is available for the command-line arguments. It is automatically set up during installation. If you need to use it immediately after installation without restarting your shell, run:
 
 ```bash
 source ~/.bashrc
@@ -149,3 +135,23 @@ For additional help or questions, please open an issue on this GitHub repository
 ## License
 
 The Quilibrium Bootstrap Tools are licensed under the [MIT License](LICENSE).
+
+## Testing
+
+This project includes a Docker-based testing setup to ensure compatibility across Ubuntu 20.04, 22.04, and 24.04. To run the tests:
+
+1. Ensure you have Docker and Docker Compose installed.
+2. Navigate to the project root directory.
+3. Run `./run_tests.sh`
+
+This will spin up Docker containers for each Ubuntu version, run the test suite, and display the results.
+
+The test suite covers:
+- Automatic installation
+- Manual installation
+- Full uninstallation
+- Partial uninstallation
+- Command executions
+- Scenarios with and without ceremonyclient pre-installed
+
+To add new tests, create additional bash scripts in the `tests/` directory.
