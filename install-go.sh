@@ -17,11 +17,9 @@ install_go() {
     GOPATH="$HOME/go"
     BASHRC_FILE="$HOME/.bashrc"
 
-    echo "Downloading $GO_COMPRESSED_FILE..."
-    wget https://go.dev/dl/$GO_COMPRESSED_FILE 
-
-    echo "Uncompressing $GO_COMPRESSED_FILE"
-    sudo tar -C /usr/local -xzf $GO_COMPRESSED_FILE
+    echo "Downloading and installing Go 1.22.4..."
+    wget --no-verbose https://go.dev/dl/$GO_COMPRESSED_FILE 
+    sudo tar -C /usr/local -xzf $GO_COMPRESSED_FILE > /dev/null 2>&1
 
     file_exists $GOROOT
 
@@ -31,7 +29,7 @@ install_go() {
     append_to_file $BASHRC_FILE "export GOPATH=$GOPATH"
     append_to_file $BASHRC_FILE "export PATH=\$GOPATH/bin:\$GOROOT/bin:\$PATH"
 
-    source $BASHRC_FILE
+    source $BASHRC_FILE > /dev/null 2>&1
 
     echo "Go 1.22.4 installed successfully"
 }

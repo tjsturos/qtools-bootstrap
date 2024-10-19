@@ -3,8 +3,13 @@
 # Source the utils file
 source "$(dirname "$0")/utils.sh"
 
-echo "This script will uninstall components of the Quilibrium Bootstrap Client."
-echo "Please select which components you want to uninstall:"
+# Trap Ctrl+C and handle it gracefully
+trap ctrl_c INT
+
+function ctrl_c() {
+    echo -e "\n\nUninstallation cancelled. Exiting..."
+    exit 1
+}
 
 # Initialize variables
 remove_repo=false
@@ -49,14 +54,19 @@ remove_service() {
 remove_cron() {
     echo "Removing cron job..."
     crontab -l | grep -v "update-bootstrap" | crontab -
-    sudo rm /usr/local/bin/update-bootstrap
 }
 
 # Function to remove binary
 remove_binary() {
     echo "Removing bootstrap client binary..."
-    rm -f "$(set_repo_dir)/node/bootstrap-node"
-    rm -f /usr/local/bin/node
+    local node_dir="$(set_repo_dir)/node"
+    local binary_path="$node_dir/bootstrap-node"
+    if [ -f "$binary_path" ]; then
+        rm -f "$binary_path"
+        echo "Bootstrap binary removed."
+    else
+        echo "Bootstrap binary not found in expected location: $binary_path"
+    fi
 }
 
 # Main uninstall process
@@ -119,6 +129,7 @@ fi
 echo -e "\nConsequences:"
 if [ "$remove_repo" = true ]; then
     echo "- You will lose all local modifications to the qtools-bootstrap scripts."
+    echo "- The manage-bootstrap and update-bootstrap commands will no longer be available."
 fi
 if [ "$remove_aliases" = true ]; then
     echo "- The manage-bootstrap and update-bootstrap commands will no longer be available."
@@ -129,23 +140,25 @@ fi
 if [ "$remove_auto_completion" = true ]; then
     echo "- Tab completion for manage-bootstrap will no longer work."
 fi
-if [ "$remove_service" = true ]; then
-    echo "- The systemd service for the bootstrap client will be removed." 
-    echo "- The bootstrap client will no longer be managed by systemd and will not start automatically at boot. Manual management of the bootstrap client is required."
-fi
 if [ "$remove_binary" = true ]; then
-    echo "- The bootstrap client binary will be removed, but the ceremonyclient directory will remain intact."
-    echo "- You will need to manually remove the ceremonyclient directory if you no longer need it."
+    echo "- The bootstrap client binary will be removed."
+    echo "- The systemd service will be stopped and removed."
+    echo "- The ceremonyclient directory will remain, but you'll need to manually remove it if desired."
 fi
 
-read -p $'\nAre you sure you want to proceed with the uninstallation? (y/N): ' confirm
-if [[ ! $confirm =~ ^[Yy]$ ]]; then
-    echo "Uninstallation cancelled."
-    exit 0
+read -p $'\nAre you sure you want to proceed with the uninstallation? (y/N/q): ' confirm
+if [[ $confirm =~ ^[Qq]$ ]]; then
+    echo "Uninstallation cancelled. Exiting..."
+    exit 1
+elif [[ ! $confirm =~ ^[Yy]$ ]]; then
+    echo "Uninstallation cancelled. Exiting..."
+    exit 1
 fi
 
 # Perform the removals
-
+if [ "$remove_repo" = true ]; then
+    remove_repository
+fi
 if [ "$remove_aliases" = true ]; then
     remove_aliases
 fi
@@ -155,14 +168,14 @@ fi
 if [ "$remove_auto_completion" = true ]; then
     remove_auto_completion
 fi
-if [ "$remove_service" = true ]; then
-    remove_service
-fi
 if [ "$remove_binary" = true ]; then
     remove_binary
 fi
-if [ "$remove_repo" = true ]; then
-    remove_repository
+if [ "$remove_service" = true ]; then
+    remove_service
 fi
 
 echo "Uninstallation process completed."
+echo "Note: The ceremonyclient directory ($(set_repo_dir)) has been left intact."
+echo "If you wish to remove it entirely, you'll need to do so manually."
+exit 0

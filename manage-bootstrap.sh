@@ -15,9 +15,51 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Function to get service status and uptime
+get_status_and_uptime() {
+    local status=$(systemctl is-active "$SERVICE_NAME")
+    if [ "$status" = "active" ]; then
+        local uptime=$(systemctl show "$SERVICE_NAME" --property=ActiveEnterTimestamp | cut -d= -f2)
+        local current_time=$(date +%s)
+        local start_time=$(date -d "$uptime" +%s)
+        local uptime_seconds=$((current_time - start_time))
+        local uptime_formatted=$(printf '%dd %dh %dm %ds' $((uptime_seconds/86400)) $((uptime_seconds%86400/3600)) $((uptime_seconds%3600/60)) $((uptime_seconds%60)))
+        echo -e "${GREEN}Service Status: Active${NC}"
+        echo -e "${GREEN}Uptime: $uptime_formatted${NC}"
+    else
+        echo -e "${RED}Service Status: $status${NC}"
+        echo -e "${RED}Uptime: Not available (service is not active)${NC}"
+    fi
+}
+
+# Function to get last update time of node binary
+get_last_link_update_time() {
+    local node_path="/usr/local/bin/node"
+    if [ -f "$node_path" ]; then
+        local last_modified=$(stat -c %y "$node_path")
+        echo -e "${GREEN}Last update time of node binary: $last_modified${NC}"
+    else
+        echo -e "${RED}Node binary not found at $node_path${NC}"
+    fi
+}
+
+# Function to get last modified date of bootstrap-node binary
+get_bootstrap_node_last_modified() {
+    local bootstrap_node_path="$(set_repo_dir)/node/bootstrap-node"
+    if [ -f "$bootstrap_node_path" ]; then
+        local last_modified=$(stat -c %y "$bootstrap_node_path")
+        echo -e "${GREEN}Last modified date of bootstrap-node binary: $last_modified${NC}"
+    else
+        echo -e "${RED}bootstrap-node binary not found at $bootstrap_node_path${NC}"
+    fi
+}
+
 # Function to display the menu
 show_menu() {
     clear
+    get_status_and_uptime
+    get_last_link_update_time
+    get_bootstrap_node_last_modified
     echo -e "${YELLOW}===== ${SERVICE_NAME} Management Menu =====${NC}"
     echo "1. View Service Status"
     echo "2. View Live Log Output"

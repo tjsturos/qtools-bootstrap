@@ -92,6 +92,11 @@ Restart=always
 RestartSec=5s
 WorkingDirectory=$(set_repo_dir)/node
 ExecStart=/usr/local/bin/node
+ExecStop=/bin/kill -s SIGINT \$MAINPID
+ExecReload=/bin/kill -s SIGINT \$MAINPID && /usr/local/bin/node
+KillSignal=SIGINT
+RestartKillSignal=SIGINT
+FinalKillSignal=SIGINT
 [Install]
 WantedBy=multi-user.target" | sudo tee "/etc/systemd/system/${SERVICE_NAME}.service" > /dev/null
         sudo systemctl daemon-reload
@@ -118,6 +123,14 @@ add_alias_to_bashrc() {
         echo "Aliases added to $bashrc_file"
     else
         echo "Aliases already exist in $bashrc_file"
+    fi
+}
+
+add_manage_script_to_bashrc() {
+    local bashrc_file="$1"
+    local manage_script_path="$(set_qtools_dir)/manage-bootstrap.sh"
+    if ! grep -q "manage-bootstrap" "$bashrc_file"; then
+        echo "$manage_script_path" >> "$bashrc_file"
     fi
 }
 
@@ -151,6 +164,9 @@ setup_cron_job
 
 # Add alias to appropriate bashrc file
 add_alias_to_bashrc "$HOME_DIR/.bashrc"
+
+# Add manage-bootstrap script to appropriate bashrc file
+add_manage_script_to_bashrc "$HOME_DIR/.bashrc"
 
 # Setup the update-bootstrap script
 SCRIPT_PATH="/usr/local/bin/update-bootstrap"
