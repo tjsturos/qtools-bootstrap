@@ -68,7 +68,7 @@ setup_repository() {
     local repo_dir=$(set_repo_dir)
     if [[ ! -d "$repo_dir" ]]; then
         echo "Cloning ceremonyclient repository..."
-        if ! git clone "$REPO_URL" "$repo_dir"; then
+        if ! git clone "$QUIL_REPO_URL" "$repo_dir"; then
             echo "Failed to clone ceremonyclient repository"
             exit 1
         fi

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-REPO_URL="https://github.com/tjsturos/qtools-bootstrap"
+QTOOLS_BOOTSTRAP_REPO_URL="https://github.com/tjsturos/qtools-bootstrap.git"
+QUIL_REPO_URL="https://github.com/QuilibriumNetwork/ceremonyclient.git"
 REPO_RAW_URL="https://raw.githubusercontent.com/tjsturos/qtools-bootstrap/main"
 SERVICE_NAME="bootstrapclient"
 
